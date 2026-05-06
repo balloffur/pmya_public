@@ -1,0 +1,35 @@
+{
+  "name": "Go",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "conversion",
+    "unsigned_out_of_range": "conversion",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "implementation-defined"
+  },
+  "targets": [
+    { "id": "go", "name": "Go (fixed widths; int/uint depend on arch)", "bits": {} },
+    { "id": "go32", "name": "Go 32-bit (int/uint=32, ptr=32)", "bits": { "int": 32, "ptr": 32 } },
+    { "id": "go64", "name": "Go 64-bit (int/uint=64, ptr=64)", "bits": { "int": 64, "ptr": 64 } }
+  ],
+  "types": [
+    { "name": "bool", "kind": "u", "bits": 1 },
+
+    { "name": "int8", "kind": "s", "bits": 8 },
+    { "name": "uint8", "kind": "u", "bits": 8 },
+    { "name": "int16", "kind": "s", "bits": 16 },
+    { "name": "uint16", "kind": "u", "bits": 16 },
+    { "name": "int32", "kind": "s", "bits": 32 },
+    { "name": "uint32", "kind": "u", "bits": 32 },
+    { "name": "int64", "kind": "s", "bits": 64 },
+    { "name": "uint64", "kind": "u", "bits": 64 },
+
+    { "name": "int", "kind": "alias", "key": "int", "signed": true, "impl_if_missing": true },
+    { "name": "uint", "kind": "alias", "key": "int", "signed": false, "impl_if_missing": true },
+    { "name": "uintptr", "kind": "alias", "key": "ptr", "signed": false, "impl_if_missing": true },
+
+    { "name": "float32 (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "float64 (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}

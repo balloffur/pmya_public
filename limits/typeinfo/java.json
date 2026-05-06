@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "java",
+  "languageName": "Java",
+  "languageNotes": [
+    "Java primitive numeric types have fixed sizes and two's-complement / IEEE semantics specified by the language.",
+    "Unlike C/C++, Java does not vary primitive widths by ABI or platform data model."
+  ],
+  "types": [
+    {
+      "id": "byte",
+      "names": [
+        "byte"
+      ],
+      "kind": "signed integral primitive",
+      "definition": "8-bit signed two's-complement integer primitive type.",
+      "summary": "Smallest ordinary integer primitive. Good for raw bytes, compact arrays, protocol fields, and I/O buffers, but all arithmetic promotes to int.",
+      "standardGuarantee": "Exactly 8 bits, range -128..127, same on every Java implementation.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "1 byte / 8 bits"
+        }
+      ],
+      "examples": [
+        "byte b = 127;",
+        "byte x = (byte)0xff;"
+      ],
+      "specialRules": [
+        "Arithmetic on byte promotes to int before the operation result type is chosen.",
+        "Narrowing conversions back to byte may lose high bits.",
+        "Overflow in byte arithmetic occurs after promotion/truncation steps and is well-defined according to two's-complement narrowing behavior."
+      ],
+      "aliases": [
+        "byte"
+      ],
+      "readMore": [
+        "JLS primitive integral types",
+        "widening and narrowing primitive conversions"
+      ]
+    },
+    {
+      "id": "short",
+      "names": [
+        "short"
+      ],
+      "kind": "signed integral primitive",
+      "definition": "16-bit signed two's-complement integer primitive type.",
+      "summary": "Larger than byte but still narrower than int. Used in compact storage and some binary formats; arithmetic still promotes to int.",
+      "standardGuarantee": "Exactly 16 bits, range -32768..32767 on every Java implementation.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "short s = 30000;"
+      ],
+      "specialRules": [
+        "Arithmetic promotes to int.",
+        "Narrowing casts may discard high bits."
+      ],
+      "aliases": [
+        "short"
+      ],
+      "readMore": [
+        "JLS primitive integral types"
+      ]
+    },
+    {
+      "id": "char",
+      "names": [
+        "char",
+        "character"
+      ],
+      "kind": "unsigned integral primitive / UTF-16 code unit",
+      "definition": "16-bit unsigned primitive representing UTF-16 code units.",
+      "summary": "Java char is not a full Unicode code point type; it stores one UTF-16 code unit. Supplementary characters need surrogate pairs.",
+      "standardGuarantee": "Exactly 16 bits, range 0..65535, unsigned.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "char c = 'A';",
+        "char hs = '\\uD83E';"
+      ],
+      "specialRules": [
+        "A single Java char may represent only half of a surrogate pair.",
+        "Arithmetic involving char usually promotes to int.",
+        "Do not equate char count with Unicode user-perceived character count."
+      ],
+      "aliases": [
+        "char",
+        "UTF-16 code unit"
+      ],
+      "readMore": [
+        "JLS char type",
+        "Unicode and surrogate pairs"
+      ]
+    },
+    {
+      "id": "int",
+      "names": [
+        "int",
+        "integer"
+      ],
+      "kind": "signed integral primitive",
+      "definition": "32-bit signed two's-complement integer primitive type.",
+      "summary": "Default integer type for most Java code and the target of arithmetic promotion for smaller integral types.",
+      "standardGuarantee": "Exactly 32 bits, range -2^31..2^31-1 on every JVM.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "int n = 42;"
+      ],
+      "specialRules": [
+        "Overflow wraps according to two's-complement arithmetic; Java does not make signed overflow undefined.",
+        "Division by zero on integer types throws ArithmeticException.",
+        "Use Integer.compareUnsigned or dedicated APIs when you want unsigned interpretation tricks."
+      ],
+      "aliases": [
+        "int",
+        "integer"
+      ],
+      "readMore": [
+        "JLS primitive integral types",
+        "integer operators"
+      ]
+    },
+    {
+      "id": "long",
+      "names": [
+        "long"
+      ],
+      "kind": "signed integral primitive",
+      "definition": "64-bit signed two's-complement integer primitive type.",
+      "summary": "Primary large fixed-width integer primitive for ordinary Java code. Suffix L/l used in literals.",
+      "standardGuarantee": "Exactly 64 bits, range -2^63..2^63-1 on every JVM.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "long big = 9_223_372_036_854_775_807L;"
+      ],
+      "specialRules": [
+        "Overflow wraps in two's-complement sense.",
+        "Use BigInteger for arbitrary precision integer arithmetic."
+      ],
+      "aliases": [
+        "long"
+      ],
+      "readMore": [
+        "JLS primitive integral types"
+      ]
+    },
+    {
+      "id": "float",
+      "names": [
+        "float"
+      ],
+      "kind": "floating primitive",
+      "definition": "32-bit IEEE 754 binary32 floating-point primitive.",
+      "summary": "Single-precision float. Less precision than double; literals need suffix F/f unless assignment context narrows a constant expression legally.",
+      "standardGuarantee": "Exactly IEEE 754 binary32 in modern Java specification wording.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "24 bits of precision including the hidden bit; about 6-7 decimal digits.",
+      "rounding": "IEEE 754 rounding semantics; Java now specifies strict floating-point behavior more tightly than very old historical folklore suggests.",
+      "examples": [
+        "float x = 1.0f;",
+        "float y = 0.1f;"
+      ],
+      "specialRules": [
+        "0.1f is not exact.",
+        "NaN is unordered and not equal to itself.",
+        "Use Float.floatToRawIntBits for bit-level inspection."
+      ],
+      "aliases": [
+        "float",
+        "binary32"
+      ],
+      "readMore": [
+        "JLS floating-point types"
+      ]
+    },
+    {
+      "id": "double",
+      "names": [
+        "double"
+      ],
+      "kind": "floating primitive",
+      "definition": "64-bit IEEE 754 binary64 floating-point primitive.",
+      "summary": "Default floating type in Java. Better precision/range than float; still not exact for most decimal fractions.",
+      "standardGuarantee": "Exactly IEEE 754 binary64 in modern Java specification wording.",
+      "mainstreamSizes": [
+        {
+          "platform": "all JVMs",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "53 bits of precision; about 15-16 decimal digits.",
+      "rounding": "IEEE 754 rounding semantics.",
+      "examples": [
+        "double pi = 3.141592653589793;",
+        "double x = 0.1;"
+      ],
+      "specialRules": [
+        "All integers up to 2^53 are exactly representable.",
+        "NaN != NaN.",
+        "Signed zero matters."
+      ],
+      "aliases": [
+        "double",
+        "binary64"
+      ],
+      "readMore": [
+        "JLS floating-point types"
+      ]
+    },
+    {
+      "id": "biginteger",
+      "names": [
+        "BigInteger",
+        "java.math.BigInteger"
+      ],
+      "kind": "arbitrary-precision integer library type",
+      "definition": "Immutable arbitrary-precision signed integer class from java.math.",
+      "summary": "Use when fixed-width overflow is unacceptable or when the problem domain is mathematically integer-valued without practical bit limits.",
+      "standardGuarantee": "Library type, not primitive. Precision grows as needed subject to memory and implementation limits.",
+      "examples": [
+        "BigInteger.valueOf(10)",
+        "new BigInteger(\"12345678901234567890\")"
+      ],
+      "specialRules": [
+        "Arithmetic allocates new objects.",
+        "No fixed machine width.",
+        "Best for exact large integer math, not hot-loop primitive arithmetic."
+      ],
+      "aliases": [
+        "BigInteger",
+        "java.math.BigInteger"
+      ],
+      "readMore": [
+        "java.math.BigInteger",
+        "JLS predefined classes mention"
+      ]
+    },
+    {
+      "id": "bigdecimal",
+      "names": [
+        "BigDecimal",
+        "java.math.BigDecimal"
+      ],
+      "kind": "arbitrary-precision decimal library type",
+      "definition": "Immutable arbitrary-precision decimal class with explicit scale and configurable rounding.",
+      "summary": "Best fit for exact decimal business rules, money calculations with explicit rounding policies, and decimal strings that must not suffer binary floating approximations.",
+      "standardGuarantee": "Library type, not primitive. Decimal precision/scale semantics are defined by the class API rather than primitive width.",
+      "examples": [
+        "new BigDecimal(\"0.1\")",
+        "BigDecimal.valueOf(0.1) // beware source of value"
+      ],
+      "specialRules": [
+        "Construct from string for exact human-decimal intent.",
+        "Division may require explicit rounding mode.",
+        "Equality checks include scale unless using compareTo."
+      ],
+      "aliases": [
+        "BigDecimal",
+        "java.math.BigDecimal"
+      ],
+      "readMore": [
+        "java.math.BigDecimal"
+      ]
+    }
+  ]
+}

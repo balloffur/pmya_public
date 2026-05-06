@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>JavaScript runner</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css">
+  <link rel="stylesheet" href="./style.css">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+</head>
+<body>
+  <a href="/" class="nav-home" aria-label="home">
+    <svg viewBox="0 0 24 24" width="40" height="40"
+      fill="none" stroke="currentColor" stroke-width="3"
+      stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+
+  <div class="panel" id="panel">
+    <div class="title">
+      <div>JavaScript runner</div>
+      <div class="bar">
+        <button class="btn btn-mini" id="js_help" title="Help">?</button>
+        <button class="btn" id="js_run">Run</button>
+        <button class="btn" id="js_stop">Stop</button>
+        <button class="btn" id="js_clear">Clear</button>
+        <label class="chk"><input type="checkbox" id="js_autorun">Auto</label>
+      </div>
+    </div>
+
+    <div id="help_panel" hidden>
+      <div class="help_grid">
+        <div class="help_block">
+          <h4>Как запускать</h4>
+          <ul>
+            <li><span class="kbd">Ctrl+Enter</span> или Run.</li>
+            <li>Stop пересоздаёт sandbox (убивает зависший код).</li>
+            <li>Вывод: <span class="kbd">console.log/info/warn/error</span>.</li>
+          </ul>
+        </div>
+
+        <div class="help_block">
+          <h4>Ограничения</h4>
+          <ul>
+            <li>Код исполняется в sandboxed iframe (allow-scripts).</li>
+            <li>Нет доступа к DOM этой страницы.</li>
+            <li>Нет доступа к cookies / localStorage этой страницы.</li>
+            <li><span class="kbd">fetch</span> упирается в CORS.</li>
+            <li>Бесконечные циклы грузят CPU до Stop/закрытия вкладки.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="help_links">
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noopener">MDN JS</a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Console" target="_blank" rel="noopener">Console</a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank" rel="noopener">Fetch</a>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="codewrap">
+        <pre class="language-javascript"><code id="js_code" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
+      </div>
+      <pre id="js_console" tabindex="0"></pre>
+    </div>
+
+    <iframe id="js_sandbox" sandbox="allow-scripts" style="display:none"></iframe>
+  </div>
+
+  <script>
+  (() => {
+    const codeEl = document.getElementById("js_code");
+    const outEl  = document.getElementById("js_console");
+    const runBtn = document.getElementById("js_run");
+    const stopBtn= document.getElementById("js_stop");
+    const clrBtn = document.getElementById("js_clear");
+    const autoEl = document.getElementById("js_autorun");
+    const helpBtn = document.getElementById("js_help");
+    const helpPanel = document.getElementById("help_panel");
+
+    const KEY = "jsrunner_code_v1";
+    const HELPKEY = "jsrunner_help_open_v1";
+
+    let fr = document.getElementById("js_sandbox");
+    let tRun = 0;
+    let tHi = 0;
+
+    function getText(){ return codeEl.innerText.replace(/\r/g, ""); }
+    function setText(s){ codeEl.textContent = s; }
+
+    function fmt(x){
+      if (x instanceof Error) return x.stack || x.message || String(x);
+      if (typeof x === "string") return x;
+      try { return JSON.stringify(x); } catch { return String(x); }
+    }
+
+    function print(type, args){
+      const msg = (args || []).map(fmt).join(" ");
+      outEl.textContent += (type ? (type + ": ") : "") + msg + "\n";
+      outEl.scrollTop = outEl.scrollHeight;
+    }
+
+    function saveSel(){
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return null;
+      const r = sel.getRangeAt(0);
+      if (!codeEl.contains(r.startContainer) || !codeEl.contains(r.endContainer)) return null;
+
+      const pre = document.createRange();
+      pre.selectNodeContents(codeEl);
+      pre.setEnd(r.startContainer, r.startOffset);
+      const start = pre.toString().length;
+
+      const pre2 = document.createRange();
+      pre2.selectNodeContents(codeEl);
+      pre2.setEnd(r.endContainer, r.endOffset);
+      const end = pre2.toString().length;
+
+      return {start, end};
+    }
+
+    function restoreSel(pos){
+      if (!pos) return;
+      const s = pos.start, e = pos.end;
+
+      function nodeAt(root, idx){
+        const it = document.createNodeIterator(root, NodeFilter.SHOW_TEXT);
+        let n, off = idx;
+        while ((n = it.nextNode())){
+          const len = n.nodeValue.length;
+          if (off <= len) return {node:n, offset:off};
+          off -= len;
+        }
+        return {node:root, offset:root.childNodes.length};
+      }
+
+      const a = nodeAt(codeEl, s);
+      const b = nodeAt(codeEl, e);
+      const r = document.createRange();
+      try{ r.setStart(a.node, a.offset); r.setEnd(b.node, b.offset); }catch{ return; }
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    }
+
+    function highlightNow(){
+      if (!window.Prism) return;
+      const pos = saveSel();
+      const txt = getText();
+      codeEl.textContent = txt;
+      Prism.highlightElement(codeEl);
+      restoreSel(pos);
+    }
+
+    function scheduleHighlight(){
+      clearTimeout(tHi);
+      tHi = setTimeout(highlightNow, 80);
+    }
+
+    function stop(){
+      const p = fr.parentNode;
+      const nf = fr.cloneNode(false);
+      nf.id = fr.id;
+      nf.sandbox = fr.sandbox;
+      nf.style.display = "none";
+      p.replaceChild(nf, fr);
+      fr = nf;
+    }
+
+    function run(){
+      outEl.textContent = "";
+      const user = getText();
+
+      const src = `<!doctype html><meta charset="utf-8">
+<script>
+(() => {
+  const send = (type, args) => parent.postMessage({__jsrunner:1,type,args}, "*");
+  const wrap = (fn, type) => (...a) => {
+    try { send(type, a); } catch {}
+    try { fn(...a); } catch {}
+  };
+
+  console.log   = wrap(console.log, "");
+  console.info  = wrap(console.info, "info");
+  console.warn  = wrap(console.warn, "warn");
+  console.error = wrap(console.error, "error");
+
+  addEventListener("error", e => {
+    send("error", [e.message + " @ " + e.filename + ":" + e.lineno + ":" + e.colno]);
+  });
+
+  addEventListener("unhandledrejection", e => {
+    send("error", [String(e.reason)]);
+  });
+
+  const __t0 = performance.now();
+
+  try {
+${user}
+  } catch (e) {
+    send("error", [e && (e.stack || e.message) ? (e.stack || e.message) : String(e)]);
+  }
+
+  const __dt = performance.now() - __t0;
+
+  let __s;
+  if (__dt >= 1000)       __s = (__dt / 1000).toFixed(2) + "s";
+  else if (__dt >= 1)     __s = (__dt).toFixed(2) + "ms";
+  else                    __s = (__dt * 1000).toFixed(2) + "us";
+
+  send("info", ["exec time:", __s]);
+})();
+<\/script>`;
+
+      fr.srcdoc = src;
+      localStorage.setItem(KEY, user);
+    }
+
+    function scheduleRun(){
+      clearTimeout(tRun);
+      tRun = setTimeout(run, 120);
+    }
+
+    addEventListener("message", (e) => {
+      if (e.source !== fr.contentWindow) return;
+      const d = e.data;
+      if (!d || d.__jsrunner !== 1) return;
+      print(d.type === "log" ? "" : d.type, d.args);
+    });
+
+    function setHelpOpen(open){
+      helpPanel.hidden = !open;
+      try{ localStorage.setItem(HELPKEY, open ? "1" : "0"); }catch{}
+    }
+
+    helpBtn.addEventListener("click", () => setHelpOpen(helpPanel.hidden));
+
+    setText(localStorage.getItem(KEY) || `console.log("hi");\n`);
+
+    const init = () => { highlightNow(); };
+    if (document.readyState === "complete") init();
+    else addEventListener("load", init, {once:true});
+
+    const savedHelp = (() => {
+      try{ return localStorage.getItem(HELPKEY) === "1"; }catch{ return false; }
+    })();
+    setHelpOpen(savedHelp);
+
+    runBtn.addEventListener("click", run);
+    stopBtn.addEventListener("click", stop);
+    clrBtn.addEventListener("click", () => { outEl.textContent = ""; });
+
+    codeEl.addEventListener("input", () => {
+      scheduleHighlight();
+      if (autoEl.checked) scheduleRun();
+    });
+
+    codeEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.ctrlKey){
+        e.preventDefault();
+        run();
+      }
+      if (e.key === "Tab"){
+        e.preventDefault();
+        document.execCommand("insertText", false, "  ");
+      }
+    });
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  })();
+  </script>
+</body>
+</html>

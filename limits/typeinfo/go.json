@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "go",
+  "languageName": "Go",
+  "languageNotes": [
+    "Go has fixed-width integer and float types plus architecture-dependent int/uint/uintptr and complex types.",
+    "Untyped constants in Go are conceptually arbitrary precision until a typed context requires representability."
+  ],
+  "types": [
+    {
+      "id": "int8",
+      "names": [
+        "int8"
+      ],
+      "kind": "signed integer",
+      "definition": "8-bit signed integer.",
+      "summary": "Fixed-width signed integer type with exact width 8.",
+      "standardGuarantee": "Exactly 8 bits; range -128..127.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "var x int8"
+      ],
+      "specialRules": [
+        "Conversion from larger numeric values truncates/sign-extends according to Go's defined conversion rules."
+      ],
+      "aliases": [
+        "int8"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "int16",
+      "names": [
+        "int16"
+      ],
+      "kind": "signed integer",
+      "definition": "16-bit signed integer.",
+      "summary": "Fixed-width signed integer type with exact width 16.",
+      "standardGuarantee": "Exactly 16 bits; range -32768..32767.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "var x int16"
+      ],
+      "specialRules": [
+        "Conversion from larger numeric values truncates/sign-extends according to Go's defined conversion rules."
+      ],
+      "aliases": [
+        "int16"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "int32",
+      "names": [
+        "int32"
+      ],
+      "kind": "signed integer",
+      "definition": "32-bit signed integer.",
+      "summary": "Fixed-width signed integer type with exact width 32.",
+      "standardGuarantee": "Exactly 32 bits; range -2^31..2^31-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "var x int32"
+      ],
+      "specialRules": [
+        "Conversion from larger numeric values truncates/sign-extends according to Go's defined conversion rules."
+      ],
+      "aliases": [
+        "int32"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "int64",
+      "names": [
+        "int64"
+      ],
+      "kind": "signed integer",
+      "definition": "64-bit signed integer.",
+      "summary": "Fixed-width signed integer type with exact width 64.",
+      "standardGuarantee": "Exactly 64 bits; range -2^63..2^63-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "var x int64"
+      ],
+      "specialRules": [
+        "Conversion from larger numeric values truncates/sign-extends according to Go's defined conversion rules."
+      ],
+      "aliases": [
+        "int64"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "uint8",
+      "names": [
+        "uint8"
+      ],
+      "kind": "unsigned integer",
+      "definition": "8-bit unsigned integer.",
+      "summary": "Fixed-width unsigned integer type with exact width 8.",
+      "standardGuarantee": "Exactly 8 bits; range 0..255.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "var x uint8"
+      ],
+      "specialRules": [
+        "Conversions between integer types sign-extend or zero-extend to infinite precision and then truncate to fit destination size."
+      ],
+      "aliases": [
+        "uint8"
+      ],
+      "readMore": [
+        "Go spec numeric types",
+        "Go spec conversions"
+      ]
+    },
+    {
+      "id": "uint16",
+      "names": [
+        "uint16"
+      ],
+      "kind": "unsigned integer",
+      "definition": "16-bit unsigned integer.",
+      "summary": "Fixed-width unsigned integer type with exact width 16.",
+      "standardGuarantee": "Exactly 16 bits; range 0..65535.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "var x uint16"
+      ],
+      "specialRules": [
+        "Conversions between integer types sign-extend or zero-extend to infinite precision and then truncate to fit destination size."
+      ],
+      "aliases": [
+        "uint16"
+      ],
+      "readMore": [
+        "Go spec numeric types",
+        "Go spec conversions"
+      ]
+    },
+    {
+      "id": "uint32",
+      "names": [
+        "uint32"
+      ],
+      "kind": "unsigned integer",
+      "definition": "32-bit unsigned integer.",
+      "summary": "Fixed-width unsigned integer type with exact width 32.",
+      "standardGuarantee": "Exactly 32 bits; range 0..2^32-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "var x uint32"
+      ],
+      "specialRules": [
+        "Conversions between integer types sign-extend or zero-extend to infinite precision and then truncate to fit destination size."
+      ],
+      "aliases": [
+        "uint32"
+      ],
+      "readMore": [
+        "Go spec numeric types",
+        "Go spec conversions"
+      ]
+    },
+    {
+      "id": "uint64",
+      "names": [
+        "uint64"
+      ],
+      "kind": "unsigned integer",
+      "definition": "64-bit unsigned integer.",
+      "summary": "Fixed-width unsigned integer type with exact width 64.",
+      "standardGuarantee": "Exactly 64 bits; range 0..2^64-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "var x uint64"
+      ],
+      "specialRules": [
+        "Conversions between integer types sign-extend or zero-extend to infinite precision and then truncate to fit destination size."
+      ],
+      "aliases": [
+        "uint64"
+      ],
+      "readMore": [
+        "Go spec numeric types",
+        "Go spec conversions"
+      ]
+    },
+    {
+      "id": "byte",
+      "names": [
+        "byte"
+      ],
+      "kind": "alias of uint8",
+      "definition": "Predeclared alias for uint8.",
+      "summary": "Semantic sugar for raw bytes, buffers, and binary data.",
+      "standardGuarantee": "Exactly the same type as uint8.",
+      "examples": [
+        "[]byte",
+        "var b byte"
+      ],
+      "specialRules": [
+        "Alias, not new distinct defined type."
+      ],
+      "aliases": [
+        "byte",
+        "uint8 alias"
+      ],
+      "readMore": [
+        "Go spec aliases"
+      ]
+    },
+    {
+      "id": "rune",
+      "names": [
+        "rune"
+      ],
+      "kind": "alias of int32 / Unicode code point convention",
+      "definition": "Predeclared alias for int32.",
+      "summary": "Conventional type for Unicode code points in Go source and APIs.",
+      "standardGuarantee": "Exactly the same type as int32.",
+      "examples": [
+        "var r rune = 'Ж'"
+      ],
+      "specialRules": [
+        "Alias, not distinct type. Strings are UTF-8 byte sequences; rune is a code point concept, not a string element type with O(1) indexing in UTF-8 text."
+      ],
+      "aliases": [
+        "rune",
+        "int32 alias"
+      ],
+      "readMore": [
+        "Go rune literals",
+        "UTF-8 in Go"
+      ]
+    },
+    {
+      "id": "int",
+      "names": [
+        "int"
+      ],
+      "kind": "architecture-dependent signed integer",
+      "definition": "Signed integer type of natural machine word size.",
+      "summary": "Default integer type in most Go code. Width is implementation-dependent but at least 32 bits, typically 32 on 32-bit targets and 64 on 64-bit targets.",
+      "standardGuarantee": "Either 32 or 64 bits in mainstream implementations; exact width implementation-specific.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit Go targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit Go targets",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "var n int"
+      ],
+      "specialRules": [
+        "Prefer int for ordinary indexing/counters unless exact width matters.",
+        "Do not assume int == int64 in portable code."
+      ],
+      "aliases": [
+        "int"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "uint",
+      "names": [
+        "uint"
+      ],
+      "kind": "architecture-dependent unsigned integer",
+      "definition": "Unsigned integer type of natural machine word size.",
+      "summary": "Unsigned counterpart of int. Used less often in general Go than in C-family code; many APIs prefer int even for sizes/counts.",
+      "standardGuarantee": "Either 32 or 64 bits in mainstream implementations; exact width implementation-specific.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit Go targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit Go targets",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "var n uint"
+      ],
+      "specialRules": [
+        "Unsigned arithmetic wraps modulo 2^N of the width.",
+        "Use carefully; mixing signed/unsigned is less idiomatic in Go than in C."
+      ],
+      "aliases": [
+        "uint"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "uintptr",
+      "names": [
+        "uintptr"
+      ],
+      "kind": "unsigned integer large enough to store uninterpreted pointer bits",
+      "definition": "Unsigned integer type large enough to store the bit pattern of a pointer.",
+      "summary": "Low-level unsafe/runtime type, not a general-purpose substitute for pointers or sizes.",
+      "standardGuarantee": "Width sufficient to store uninterpreted pointer value bits; typically same width as pointer size.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit Go targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit Go targets",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "uintptr(unsafe.Pointer(p))"
+      ],
+      "specialRules": [
+        "Using uintptr breaks garbage-collector tracking if pointer liveness assumptions are violated.",
+        "Do not store uintptr long-term when you mean an actual pointer."
+      ],
+      "aliases": [
+        "uintptr"
+      ],
+      "readMore": [
+        "unsafe.Pointer",
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "float32",
+      "names": [
+        "float32"
+      ],
+      "kind": "floating-point",
+      "definition": "IEEE 754 binary32 floating-point type.",
+      "summary": "Go floating type with 32-bit format semantics.",
+      "standardGuarantee": "Float type corresponds to IEEE 754 binary32 representation category in the language specification.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "Approximately 6-7 decimal digits for float32.",
+      "rounding": "Converting integer/float/complex values to smaller precision rounds to the destination precision as defined by the spec.",
+      "examples": [
+        "var x float32",
+        "0.1"
+      ],
+      "specialRules": [
+        "Floating-point to integer conversion discards the fractional part (truncation toward zero).",
+        "0.1 is inexact in binary."
+      ],
+      "aliases": [
+        "float32"
+      ],
+      "readMore": [
+        "Go spec conversions",
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "float64",
+      "names": [
+        "float64"
+      ],
+      "kind": "floating-point",
+      "definition": "IEEE 754 binary64 floating-point type.",
+      "summary": "Go floating type with 64-bit format semantics.",
+      "standardGuarantee": "Float type corresponds to IEEE 754 binary64 representation category in the language specification.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Go implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "Approximately 15-16 decimal digits for float64.",
+      "rounding": "Converting integer/float/complex values to smaller precision rounds to the destination precision as defined by the spec.",
+      "examples": [
+        "var x float64",
+        "0.1"
+      ],
+      "specialRules": [
+        "Floating-point to integer conversion discards the fractional part (truncation toward zero).",
+        "0.1 is inexact in binary."
+      ],
+      "aliases": [
+        "float64"
+      ],
+      "readMore": [
+        "Go spec conversions",
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "complex64",
+      "names": [
+        "complex64"
+      ],
+      "kind": "complex floating-point",
+      "definition": "Complex type represented conceptually as two float32 components.",
+      "summary": "Built-in complex type for exact pair-of-floats complex arithmetic; width category 64.",
+      "standardGuarantee": "complex64 uses two float32 components.",
+      "examples": [
+        "var z complex64 = 1+2i"
+      ],
+      "specialRules": [
+        "Real and imaginary parts follow the semantics of the corresponding float type."
+      ],
+      "aliases": [
+        "complex64"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    },
+    {
+      "id": "complex128",
+      "names": [
+        "complex128"
+      ],
+      "kind": "complex floating-point",
+      "definition": "Complex type represented conceptually as two float64 components.",
+      "summary": "Built-in complex type for exact pair-of-floats complex arithmetic; width category 128.",
+      "standardGuarantee": "complex128 uses two float64 components.",
+      "examples": [
+        "var z complex128 = 1+2i"
+      ],
+      "specialRules": [
+        "Real and imaginary parts follow the semantics of the corresponding float type."
+      ],
+      "aliases": [
+        "complex128"
+      ],
+      "readMore": [
+        "Go spec numeric types"
+      ]
+    }
+  ]
+}

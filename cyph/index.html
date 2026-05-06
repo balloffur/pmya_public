@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cyph</title>
+  
+  <link rel="stylesheet" href="./style.css">
+  
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/libsodium-sumo@0.7.13"></script>
+  <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers-sumo@0.7.13"></script>
+</head>
+<body>
+  <a href="/" class="nav-home" aria-label="home">
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+
+  <div class="layout">
+    <div class="panel panel-calc">
+      <div class="top">
+        <div class="title-wrap">
+          <span class="title">CYPH <span class="mode">Web v1.2</span></span>
+          <button id="btn-help" class="icon-btn" aria-label="help">?</button>
+        </div>
+        <div class="tools">
+          <button class="btn on" id="btn-enc">ENC</button>
+          <button class="btn" id="btn-dec">DEC</button>
+          <button class="btn" id="btn-txt">TXT</button>
+          <button class="btn" id="btn-txtdec">TXTDEC</button>
+        </div>
+      </div>
+
+      <div id="help-box" class="popover hidden">
+        <div class="help-content">
+          <b>cyph</b> — локальное потоковое шифрование (XChaCha20-Poly1305).<br><br>
+          <b>ENC / DEC:</b> Шифрование и расшифровка любых файлов.<br>
+          <b>TXT:</b> Шифрует введенный текст в base64 файл (.txt).<br>
+          <b>TXTDEC:</b> Читает base64 (.txt) и выводит расшифрованный текст на экран.<br><br>
+          <a href="https://github.com/mya-p/cyph" target="_blank">Исходный код на GitHub</a>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <div class="icon">📄</div>
+        <div class="status" id="file-label">Выберите файл</div>
+        <input type="file" id="file-input" style="display:none">
+      </div>
+
+      <textarea class="expr" id="text-input" placeholder="Введите текст для шифрования..." spellcheck="false"></textarea>
+
+      <input type="password" class="expr pass-input" placeholder="Введите пароль..." id="key-input" autocomplete="off" spellcheck="false">
+
+      <div class="result-row">
+        <button class="btn-action" id="btn-process">ВЫПОЛНИТЬ</button>
+      </div>
+
+      <div class="result-row">
+        <div class="result" id="output-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+  </script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "cs",
+  "languageName": "C#",
+  "languageNotes": [
+    "C# built-in numeric types have fixed widths. Overflow behavior depends on the type and on checked/unchecked context for integral arithmetic.",
+    "decimal is base-10 scaled and distinct from binary floating-point float/double."
+  ],
+  "types": [
+    {
+      "id": "sbyte",
+      "names": [
+        "sbyte"
+      ],
+      "kind": "integral numeric type",
+      "definition": "8-bit signed integral value type.",
+      "summary": "Built-in fixed-width integral type `sbyte`.",
+      "standardGuarantee": "Exactly 8 bits; range -128..127.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "sbyte x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "sbyte"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "byte",
+      "names": [
+        "byte"
+      ],
+      "kind": "integral numeric type",
+      "definition": "8-bit unsigned integral value type.",
+      "summary": "Built-in fixed-width integral type `byte`.",
+      "standardGuarantee": "Exactly 8 bits; range 0..255.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "byte x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "byte"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "short",
+      "names": [
+        "short"
+      ],
+      "kind": "integral numeric type",
+      "definition": "16-bit signed integral value type.",
+      "summary": "Built-in fixed-width integral type `short`.",
+      "standardGuarantee": "Exactly 16 bits; range -32768..32767.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "short x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "short"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "ushort",
+      "names": [
+        "ushort"
+      ],
+      "kind": "integral numeric type",
+      "definition": "16-bit unsigned integral value type.",
+      "summary": "Built-in fixed-width integral type `ushort`.",
+      "standardGuarantee": "Exactly 16 bits; range 0..65535.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "ushort x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "ushort"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "int",
+      "names": [
+        "int"
+      ],
+      "kind": "integral numeric type",
+      "definition": "32-bit signed integral value type.",
+      "summary": "Built-in fixed-width integral type `int`.",
+      "standardGuarantee": "Exactly 32 bits; range -2^31..2^31-1.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "int x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "int"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "uint",
+      "names": [
+        "uint"
+      ],
+      "kind": "integral numeric type",
+      "definition": "32-bit unsigned integral value type.",
+      "summary": "Built-in fixed-width integral type `uint`.",
+      "standardGuarantee": "Exactly 32 bits; range 0..2^32-1.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "uint x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "uint"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "long",
+      "names": [
+        "long"
+      ],
+      "kind": "integral numeric type",
+      "definition": "64-bit signed integral value type.",
+      "summary": "Built-in fixed-width integral type `long`.",
+      "standardGuarantee": "Exactly 64 bits; range -2^63..2^63-1.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "long x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "long"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "ulong",
+      "names": [
+        "ulong"
+      ],
+      "kind": "integral numeric type",
+      "definition": "64-bit unsigned integral value type.",
+      "summary": "Built-in fixed-width integral type `ulong`.",
+      "standardGuarantee": "Exactly 64 bits; range 0..2^64-1.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "ulong x = default;"
+      ],
+      "specialRules": [
+        "Arithmetic overflow in checked context throws OverflowException; in unchecked context high bits are discarded / wrap semantics apply for integral types."
+      ],
+      "aliases": [
+        "ulong"
+      ],
+      "readMore": [
+        "C# integral numeric types"
+      ]
+    },
+    {
+      "id": "nint",
+      "names": [
+        "nint"
+      ],
+      "kind": "native-sized signed integer",
+      "definition": "Signed integer whose width matches the platform pointer size.",
+      "summary": "Useful for interop and low-level APIs where machine word size matters.",
+      "standardGuarantee": "Width is platform-dependent: typically 32 bits on 32-bit, 64 bits on 64-bit.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit .NET",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit .NET",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "nint p = 0;"
+      ],
+      "specialRules": [
+        "Designed for native interop, not cross-platform fixed-layout serialization."
+      ],
+      "aliases": [
+        "nint",
+        "System.IntPtr-sized integer"
+      ],
+      "readMore": [
+        "native-sized integers"
+      ]
+    },
+    {
+      "id": "nuint",
+      "names": [
+        "nuint"
+      ],
+      "kind": "native-sized unsigned integer",
+      "definition": "Unsigned integer whose width matches the platform pointer size.",
+      "summary": "Unsigned counterpart to nint.",
+      "standardGuarantee": "Platform-dependent pointer-sized width.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit .NET",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit .NET",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "nuint p = 0;"
+      ],
+      "specialRules": [
+        "Wrap/overflow behavior follows integral rules and checked context."
+      ],
+      "aliases": [
+        "nuint"
+      ],
+      "readMore": [
+        "native-sized integers"
+      ]
+    },
+    {
+      "id": "half",
+      "names": [
+        "Half"
+      ],
+      "kind": "binary floating-point numeric type",
+      "definition": "16-bit IEEE 754-like floating-point type in C#/.NET.",
+      "summary": "`Half` is the half-precision binary floating type.",
+      "standardGuarantee": "Fixed width 16 bits in the runtime type system.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "precision": "~3-4 decimal digits",
+      "rounding": "Binary floating semantics; many decimal fractions are inexact.",
+      "examples": [
+        "Half x = default;"
+      ],
+      "specialRules": [
+        "NaN and infinities exist.",
+        "Equality of floating values has the usual IEEE caveats."
+      ],
+      "aliases": [
+        "Half"
+      ],
+      "readMore": [
+        "C# floating-point numeric types"
+      ]
+    },
+    {
+      "id": "float",
+      "names": [
+        "float"
+      ],
+      "kind": "binary floating-point numeric type",
+      "definition": "32-bit IEEE 754-like floating-point type in C#/.NET.",
+      "summary": "`float` is the single-precision binary floating type.",
+      "standardGuarantee": "Fixed width 32 bits in the runtime type system.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "~6-9 decimal digits",
+      "rounding": "Binary floating semantics; many decimal fractions are inexact.",
+      "examples": [
+        "float x = default;"
+      ],
+      "specialRules": [
+        "NaN and infinities exist.",
+        "Equality of floating values has the usual IEEE caveats."
+      ],
+      "aliases": [
+        "float"
+      ],
+      "readMore": [
+        "C# floating-point numeric types"
+      ]
+    },
+    {
+      "id": "double",
+      "names": [
+        "double"
+      ],
+      "kind": "binary floating-point numeric type",
+      "definition": "64-bit IEEE 754-like floating-point type in C#/.NET.",
+      "summary": "`double` is the double-precision binary floating type.",
+      "standardGuarantee": "Fixed width 64 bits in the runtime type system.",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "~15-17 decimal digits",
+      "rounding": "Binary floating semantics; many decimal fractions are inexact.",
+      "examples": [
+        "double x = default;"
+      ],
+      "specialRules": [
+        "NaN and infinities exist.",
+        "Equality of floating values has the usual IEEE caveats."
+      ],
+      "aliases": [
+        "double"
+      ],
+      "readMore": [
+        "C# floating-point numeric types"
+      ]
+    },
+    {
+      "id": "decimal",
+      "names": [
+        "decimal"
+      ],
+      "kind": "decimal floating / scaled decimal numeric type",
+      "definition": "128-bit decimal-based numeric type intended for high-precision base-10 arithmetic such as finance.",
+      "summary": "Preferred when decimal fractions must behave more like human decimal arithmetic and binary floating approximation is unacceptable.",
+      "standardGuarantee": "Fixed runtime representation with high decimal precision (28-29 significant digits in practice).",
+      "mainstreamSizes": [
+        {
+          "platform": ".NET implementations",
+          "size": "16 bytes / 128 bits storage"
+        }
+      ],
+      "precision": "28-29 significant decimal digits.",
+      "rounding": "Decimal arithmetic semantics; still finite precision, but decimal-centric rather than binary fraction-centric.",
+      "examples": [
+        "decimal money = 0.1m;"
+      ],
+      "specialRules": [
+        "Literals use suffix m/M.",
+        "Slower than float/double in many numeric kernels.",
+        "Not arbitrary precision."
+      ],
+      "aliases": [
+        "decimal"
+      ],
+      "readMore": [
+        "C# decimal type"
+      ]
+    },
+    {
+      "id": "biginteger",
+      "names": [
+        "BigInteger",
+        "System.Numerics.BigInteger"
+      ],
+      "kind": "arbitrary-precision integer library type",
+      "definition": "Arbitrary-precision signed integer struct in System.Numerics.",
+      "summary": "Use when fixed-width overflow is not acceptable.",
+      "standardGuarantee": "Precision grows as needed subject to memory.",
+      "examples": [
+        "BigInteger.Pow(2, 200)"
+      ],
+      "specialRules": [
+        "Library type; not built-in keyword.",
+        "Arithmetic cost scales with operand size."
+      ],
+      "aliases": [
+        "BigInteger",
+        "System.Numerics.BigInteger"
+      ],
+      "readMore": [
+        "System.Numerics.BigInteger"
+      ]
+    }
+  ]
+}

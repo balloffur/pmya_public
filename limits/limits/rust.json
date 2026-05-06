@@ -1,0 +1,36 @@
+{
+  "name": "Rust",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "conversion",
+    "unsigned_out_of_range": "conversion",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "conversion"
+  },
+  "targets": [
+    { "id": "rust", "name": "Rust (primitive widths fixed; isize/usize depend on arch)", "bits": {} },
+    { "id": "rust32", "name": "Rust 32-bit (isize/usize=32, ptr=32)", "bits": { "ptr": 32 } },
+    { "id": "rust64", "name": "Rust 64-bit (isize/usize=64, ptr=64)", "bits": { "ptr": 64 } }
+  ],
+  "types": [
+    { "name": "bool", "kind": "u", "bits": 1 },
+
+    { "name": "i8", "kind": "s", "bits": 8 },
+    { "name": "u8", "kind": "u", "bits": 8 },
+    { "name": "i16", "kind": "s", "bits": 16 },
+    { "name": "u16", "kind": "u", "bits": 16 },
+    { "name": "i32", "kind": "s", "bits": 32 },
+    { "name": "u32", "kind": "u", "bits": 32 },
+    { "name": "i64", "kind": "s", "bits": 64 },
+    { "name": "u64", "kind": "u", "bits": 64 },
+    { "name": "i128", "kind": "s", "bits": 128 },
+    { "name": "u128", "kind": "u", "bits": 128 },
+
+    { "name": "isize", "kind": "alias", "key": "ptr", "signed": true, "impl_if_missing": true },
+    { "name": "usize", "kind": "alias", "key": "ptr", "signed": false, "impl_if_missing": true },
+
+    { "name": "f32 (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "f64 (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}

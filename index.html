@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>pmya.ru — simple static math and programming tools</title>
+  <meta name="description" content="Collection of simple static web tools for everyday mathematical and programming tasks.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <style>
+    :root {
+      --bg: #e6e6e6;
+      --panel: #f2f2f2;
+      --border: #bdbdbd;
+      --text: #222;
+      --muted: #666;
+      --item-bg: #fafafa;
+      --item-hover: #ffffff;
+      --toggle-bg: #e0e0e0;
+    }
+
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 26px 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      width: 560px;
+      max-width: 92%;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle {
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .toggle:hover {
+      opacity: 0.8;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    a.item {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: var(--item-bg);
+    }
+
+    a.item:hover {
+      background: var(--item-hover);
+    }
+
+    .item-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        align-items: flex-start;
+        padding: 16px;
+      }
+
+      .panel {
+        width: 100%;
+        max-width: 100%;
+        padding: 18px 16px;
+        border-radius: 12px;
+      }
+
+      .title {
+        font-size: 22px;
+        margin-bottom: 14px;
+      }
+
+      .list {
+        gap: 12px;
+      }
+
+      a.item {
+        padding: 16px 16px;
+        border-radius: 12px;
+        min-height: 56px;
+      }
+
+      .item-title {
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+
+      .item-desc {
+        font-size: 14px;
+      }
+    }
+
+    @media (hover: none) {
+      a.item:active {
+        background: var(--item-hover);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="./theme.css">
+  <script src="./theme.js"></script>
+</head>
+
+<body>
+  <div class="panel">
+    <h1 class="title">
+      pmya.ru
+      <button class="toggle" id="theme-toggle" aria-label="Toggle dark mode">☀️</button>
+    </h1>
+
+    <div class="list">
+      <a class="item" href="/convert/">
+        <div class="item-title">Base converter</div>
+        <div class="item-desc">Base conversion</div>
+      </a>
+      <a class="item" href="/primetest/">
+        <div class="item-title">Primality test</div>
+        <div class="item-desc">Miller–Rabin, deterministic ≤ 2⁶⁴, probabilistic otherwise</div>
+      </a>
+      <a class="item" href="/factor/">
+        <div class="item-title">Factorization</div>
+        <div class="item-desc">Trial division + Pollard-Rho, good enough for middle-sized numbers</div>
+      </a>
+      <a class="item" href="/texfast/">
+        <div class="item-title">TeX formulas</div>
+        <div class="item-desc">KaTeX web-renderer</div>
+      </a>
+      <a class="item" href="/calc/">
+        <div class="item-title">Calculator</div>
+        <div class="item-desc">Floating/integer calculator with variables</div>
+      </a>
+      <a class="item" href="/JS_runner/">
+        <div class="item-title">JavaScript runner (dev)</div>
+        <div class="item-desc">Run simple JavaScript code with console output</div>
+      </a>
+      <a class="item" href="/limits/">
+        <div class="item-title">Limits (dev)</div>
+        <div class="item-desc">Check if a number fits in a certain numerical limits in different programming languages</div>
+      </a>
+      <a class="item" href="/cyph/">
+        <div class="item-title">Cyph (dev)</div>
+        <div class="item-desc">Encryption/Decryption tool for custom .cyph file format</div>
+      </a>
+    </div>
+  </div>
+
+  <script src="mobile.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
+</body>
+</html>

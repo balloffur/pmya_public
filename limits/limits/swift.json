@@ -1,0 +1,33 @@
+{
+  "name": "Swift",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": false,
+    "signed_out_of_range": "reject",
+    "unsigned_out_of_range": "reject",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "reject"
+  },
+  "targets": [
+    { "id": "swift64", "name": "Swift (typical platforms: Int/UInt=64, ptr=64)", "bits": { "ptr": 64 } },
+    { "id": "swift32", "name": "Swift 32-bit (rare; Int/UInt=32, ptr=32)", "bits": { "ptr": 32 } }
+  ],
+  "types": [
+    { "name": "Bool", "kind": "u", "bits": 1 },
+
+    { "name": "Int8", "kind": "s", "bits": 8 },
+    { "name": "UInt8", "kind": "u", "bits": 8 },
+    { "name": "Int16", "kind": "s", "bits": 16 },
+    { "name": "UInt16", "kind": "u", "bits": 16 },
+    { "name": "Int32", "kind": "s", "bits": 32 },
+    { "name": "UInt32", "kind": "u", "bits": 32 },
+    { "name": "Int64", "kind": "s", "bits": 64 },
+    { "name": "UInt64", "kind": "u", "bits": 64 },
+
+    { "name": "Int", "kind": "alias", "key": "ptr", "signed": true, "impl_if_missing": true },
+    { "name": "UInt", "kind": "alias", "key": "ptr", "signed": false, "impl_if_missing": true },
+
+    { "name": "Float (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "Double (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}

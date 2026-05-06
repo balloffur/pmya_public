@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TeX Render</title>
+
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+  <link rel="stylesheet" href="./styles.css">
+
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+</head>
+<body>
+
+<a href="/" class="nav-home" aria-label="home">
+    <svg viewBox="0 0 24 24" width="40" height="40"
+        fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+  
+<div class="wrap">
+  <div class="grid">
+
+    <div class="card">
+      <h2>Input</h2>
+
+      <div class="fieldwrap">
+        <button id="toggleAC" class="clipbtn acbtn on" type="button" aria-label="Toggle autocomplete">
+          <svg viewBox="0 0 24 24" class="clipicon" aria-hidden="true">
+            <path d="M6 7h14M6 12h10M6 17h8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M3.5 7h.01M3.5 12h.01M3.5 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <button id="copyInput" class="clipbtn" type="button" aria-label="Copy TeX">
+          <svg viewBox="0 0 24 24" class="clipicon" aria-hidden="true">
+            <path d="M16 4h-1.18A3 3 0 0 0 12 2a3 3 0 0 0-2.82 2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1h-2v1H8V6h1.18A3 3 0 0 0 12 8a3 3 0 0 0 2.82-2H16v3h2V6a2 2 0 0 0-2-2Z"/>
+            <path d="M20 8h-6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Z"/>
+          </svg>
+        </button>
+
+        <textarea id="src">\frac{a^2+b^2}{c}</textarea>
+        <div id="ac" class="ac" aria-label="Autocomplete"></div>
+      </div>
+
+      <div class="row">
+        <select id="mode">
+          <option value="display">display</option>
+          <option value="inline">inline</option>
+        </select>
+        <button id="clear">clear</button>
+      </div>
+
+      <div class="help">
+        <b>Cheatsheet</b>
+        <input id="helpSearch" class="help-search" placeholder="Search in cheatsheet">
+        <div class="help-stack">
+          <div id="helpBase" class="help-pane">
+            <div class="help-item" data-tex="\frac{a}{b}">\frac{a}{b}</div>
+            <div class="help-item" data-tex="x^2">x^2</div>
+            <div class="help-item" data-tex="x_i">x_i</div>
+            <div class="help-item" data-tex="\sqrt{x}">\sqrt{x}</div>
+            <div class="help-item" data-tex="\int_a^b f(x)\,dx">\int_a^b f(x)\,dx</div>
+            <div class="help-item" data-tex="\sum_{k=1}^{n} a_k">\sum_{k=1}^{n} a_k</div>
+            <div class="help-item" data-tex="\begin{pmatrix}a&b\\c&d\end{pmatrix}">pmatrix</div>
+            <div class="help-item" data-tex="\ce{2H2 + O2 -> 2H2O}">\ce{2H2 + O2 -> 2H2O}</div>
+          </div>
+          <div id="helpOverlay" class="help-pane overlay" style="display:none">
+            <div class="help-overlay-title">Results</div>
+            <div id="helpResults"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Output</h2>
+
+      <div class="fieldwrap">
+        <div id="out" class="out"></div>
+      </div>
+
+      <div id="err" class="err"></div>
+    </div>
+
+  </div>
+
+  <div class="docbar">
+    <span>Docs:</span>
+    <a href="https://katex.org/docs/supported.html" target="_blank" rel="noopener">Supported</a>
+    <span class="sep">|</span>
+    <a href="https://katex.org/docs/supported.html#mhchem" target="_blank" rel="noopener">Supported chemistry</a>
+  </div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/mhchem.min.js"></script>
+<script defer src="./autocomplete.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const src=document.getElementById("src"),out=document.getElementById("out"),err=document.getElementById("err"),
+        mode=document.getElementById("mode"),clearBtn=document.getElementById("clear");
+
+  function showErr(msg){
+    err.style.display="block";
+    err.textContent=String(msg);
+  }
+
+  let t=0;
+  function renderNow(){
+    err.style.display="none";
+    try{
+      katex.render(src.value,out,{displayMode:mode.value==="display",throwOnError:true,trust:false});
+    }catch(e){
+      out.textContent="";
+      showErr(e);
+    }
+  }
+
+  function schedule(){clearTimeout(t);t=setTimeout(renderNow,60)}
+  src.addEventListener("input",schedule);
+  mode.addEventListener("change",renderNow);
+  clearBtn.addEventListener("click",()=>{src.value="";renderNow()});
+
+  function insertTex(tex){
+    const s=src.selectionStart,e=src.selectionEnd;
+    src.value=src.value.slice(0,s)+tex+src.value.slice(e);
+    src.selectionStart=src.selectionEnd=s+tex.length;
+    src.focus();
+    schedule();
+  }
+
+  function replaceRange(a,b,tex){
+    src.value = src.value.slice(0,a)+tex+src.value.slice(b);
+    src.selectionStart = src.selectionEnd = a+tex.length;
+    src.focus();
+    schedule();
+  }
+
+  document.querySelectorAll("#helpBase .help-item")
+    .forEach(el=>el.onclick=()=>insertTex(el.dataset.tex||""));
+
+  const helpSearch=document.getElementById("helpSearch"),
+        helpBase=document.getElementById("helpBase"),
+        helpOverlay=document.getElementById("helpOverlay"),
+        helpResults=document.getElementById("helpResults");
+
+  let helpData=[],helpLoaded=false;
+
+  function setSearchMode(on){
+    helpBase.style.visibility=on?"hidden":"visible";
+    helpOverlay.style.display=on?"block":"none";
+  }
+
+  function showStatus(t){
+    helpResults.innerHTML="";
+    const d=document.createElement("div");
+    d.className="help-status";
+    d.textContent=t;
+    helpResults.appendChild(d);
+  }
+
+  fetch("./help.json", { cache: "force-cache" })
+    .then(r=>r.json())
+    .then(d=>{
+      helpData = Array.isArray(d) ? d : [];
+      helpLoaded = true;
+      window.dispatchEvent(new Event("texfast:helpLoaded"));
+    })
+    .catch(()=>{
+      helpLoaded = false;
+      window.dispatchEvent(new Event("texfast:helpLoaded"));
+    });
+
+  function renderJson(q){
+    const qq=q.trim().toLowerCase();
+    if(!qq){setSearchMode(false);return}
+    setSearchMode(true);
+    if(!helpLoaded){showStatus("help.json не загружен");return}
+    helpResults.innerHTML="";
+    let n=0;
+    for(const it of helpData){
+      const hay=((it.tex||"")+" "+(it.title||"")+" "+(it.keys||[]).join(" ")).toLowerCase();
+      if(!hay.includes(qq))continue;
+      const d=document.createElement("div");
+      d.className="help-item";
+      d.textContent=(it.tex||"")+" — "+(it.title||"");
+      d.onclick=()=>insertTex(it.tex||"");
+      helpResults.appendChild(d);
+      if(++n>=120)break;
+    }
+    if(!n)showStatus("Ничего не найдено");
+  }
+
+  helpSearch.addEventListener("input",e=>renderJson(e.target.value));
+
+  if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
+
+  document.getElementById("copyInput").onclick = async () => {
+    err.style.display="none";
+    try{
+      await navigator.clipboard.writeText(src.value);
+    }catch(e){
+      showErr(e);
+    }
+  };
+
+  window.TEXFAST_API = {
+    getHelp: () => ({ loaded: helpLoaded, data: helpData }),
+    insertTex,
+    replaceRange,
+    src,
+    acEl: document.getElementById("ac"),
+    schedule,
+    acEnabled: true
+  };
+  window.dispatchEvent(new Event("texfast:apiReady"));
+
+  const acBtn = document.getElementById("toggleAC");
+  const AC_KEY = "texfast.autocomplete";
+
+  function setAC(on){
+    window.TEXFAST_API.acEnabled = !!on;
+    acBtn.classList.toggle("on", !!on);
+    acBtn.classList.toggle("off", !on);
+    try{ localStorage.setItem(AC_KEY, on ? "1" : "0"); }catch(_){}
+    window.dispatchEvent(new Event("texfast:acToggle"));
+  }
+
+  let initOn = true;
+  try{ initOn = localStorage.getItem(AC_KEY) !== "0"; }catch(_){}
+  setAC(initOn);
+
+  acBtn.onclick = () => setAC(!window.TEXFAST_API.acEnabled);
+
+  renderNow();
+});
+</script>
+</body>
+</html>

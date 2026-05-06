@@ -1,0 +1,1981 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "c",
+  "languageName": "C/C++",
+  "languageNotes": [
+    "This file intentionally mixes C and C++ because the current page exposes them as one language choice.",
+    "Every entry states whether it is standard C, standard C++, both, or an extension / POSIX type.",
+    "For C and C++ integer widths, the standard mostly specifies ordering and minimum widths rather than fixed byte counts.",
+    "For exact-width typedefs like int32_t, availability depends on the implementation actually having a type with exactly that width and no padding bits."
+  ],
+  "types": [
+    {
+      "id": "bool",
+      "names": [
+        "bool",
+        "_Bool",
+        "boolean"
+      ],
+      "availability": "C: _Bool is built-in since C99; bool is macro alias from <stdbool.h> through C17 and a keyword in C23. C++: bool is a built-in fundamental type.",
+      "kind": "boolean",
+      "definition": "Boolean type. In C, the built-in type is `_Bool`; the identifier `bool` historically came from `<stdbool.h>` and in C23 becomes a language keyword.\nIn C++, `bool` is a distinct fundamental type with the values `true` and `false`.",
+      "summary": "Use for logical state, conditions, flags, and APIs that conceptually answer yes/no. This is not a 1-bit storage type;\nit is a proper object type that stores one of two semantic values. In practice it usually occupies one byte, but the standard does not require a 1-byte object representation.",
+      "standardGuarantee": "Standard guarantee: values are `0`/`1` in C for `_Bool` after conversion, and `false`/`true` in C++. Any scalar converted to boolean becomes false if it compares equal to zero and true otherwise.\nSize is implementation-defined. The standard does not promise a fixed width in bits beyond representing the two values.",
+      "mainstreamSizes": [
+        {
+          "platform": "GCC/Clang x86-64 LP64",
+          "size": "1 byte"
+        },
+        {
+          "platform": "MSVC x64 LLP64",
+          "size": "1 byte"
+        },
+        {
+          "platform": "ARM embedded compilers",
+          "size": "usually 1 byte"
+        }
+      ],
+      "examples": [
+        "false",
+        "true",
+        "(_Bool)0",
+        "(_Bool)1"
+      ],
+      "specialRules": [
+        "Converting any nonzero integer or floating value to bool yields true; zero yields false.",
+        "In C, `_Bool x = 2;` stores 1, not 2.",
+        "In C++, `bool` participates in integral promotions; arithmetic on bool is legal but usually stylistically discouraged.",
+        "Never use bool when bit-level layout must be exact across ABIs unless you have a separate serialization contract."
+      ],
+      "aliases": [
+        "_Bool",
+        "bool",
+        "boolean"
+      ],
+      "commonConfusions": [
+        "`bool` is not guaranteed to be 8 bits by the language standard even if it usually is.",
+        "`bool` is not an integer width substitute like `uint8_t`."
+      ],
+      "readMore": [
+        "C23 6.2.5 Types",
+        "C++ fundamental types / boolean type",
+        "<stdbool.h>"
+      ]
+    },
+    {
+      "id": "char",
+      "names": [
+        "char",
+        "plain char"
+      ],
+      "availability": "Both C and C++",
+      "kind": "character / small integer",
+      "definition": "`char` is a distinct integer type used for character code units and raw bytes. It is not the same type as `signed char` or `unsigned char`,\neven though it has the same size and alignment as one of them.",
+      "summary": "This is one of the most important edge-case types in C and C++. Plain `char` is its own type, but whether it behaves as signed or unsigned for numeric conversion is implementation-defined.\nIt is also the canonical type for narrow character literals and for many byte-oriented APIs.",
+      "standardGuarantee": "Standard guarantee: `sizeof(char) == 1` by definition. A byte in C/C++ is the size of `char`; it is not guaranteed to be 8 bits by the language standard,\nthough `CHAR_BIT` is at least 8 and on mainstream systems is 8. Signedness of plain `char` is implementation-defined.",
+      "representation": "Same object representation and alignment as either `signed char` or `unsigned char`. It can alias object representations byte-wise.\nIn ordinary hosted desktop/server environments it is almost always 8 bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like systems",
+          "size": "1 byte, usually 8 bits"
+        },
+        {
+          "platform": "LLP64 Windows/MSVC",
+          "size": "1 byte, usually 8 bits"
+        },
+        {
+          "platform": "DSP / unusual embedded targets",
+          "size": "1 byte, but a byte may be >8 bits"
+        }
+      ],
+      "examples": [
+        "'A'",
+        "'\\n'",
+        "char c = 65;",
+        "char buf[256];"
+      ],
+      "specialRules": [
+        "Plain `char` may be signed or unsigned depending on the compiler/target.",
+        "Do not use plain `char` for arithmetic that depends on negative values unless you know the implementation choice.",
+        "`char`, `signed char`, and `unsigned char` are three distinct types.",
+        "Access through character types is special in aliasing rules; byte-wise inspection of object representations is typically done through character types."
+      ],
+      "aliases": [
+        "char",
+        "narrow char",
+        "plain char"
+      ],
+      "commonConfusions": [
+        "`char` is not guaranteed to be signed.",
+        "`sizeof(char)` is always 1, but that does not imply 8 bits.",
+        "Text encoding is separate from the type width."
+      ],
+      "readMore": [
+        "C/C++ character types",
+        "CHAR_BIT",
+        "basic character and object representation rules"
+      ]
+    },
+    {
+      "id": "signed_char",
+      "names": [
+        "signed char",
+        "schar"
+      ],
+      "availability": "Both C and C++",
+      "kind": "signed integer / character-sized integer",
+      "definition": "Signed integer type with the same size as `char`. Distinct from both `char` and `unsigned char`.",
+      "summary": "Use this when you want a byte-sized signed integer and you really mean signed arithmetic. It is preferable to plain `char` when negative values matter semantically.",
+      "standardGuarantee": "Standard guarantee: width is the same as `char`; minimum range is at least -127..127 in pre-C23 wording and effectively two's-complement range on mainstream systems.\nSince modern C and C++ practice assumes two's-complement, mainstream behavior is -128..127 for 8-bit bytes.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "1 byte, usually 8 bits"
+        }
+      ],
+      "examples": [
+        "signed char x = -1;",
+        "signed char delta = 42;"
+      ],
+      "specialRules": [
+        "Overflow of signed integer arithmetic is undefined behavior in C and C++ for the built-in arithmetic types.",
+        "Because it is a signed integer type, promotion to `int` often happens before arithmetic.",
+        "Use this rather than plain `char` when you need explicit signed semantics."
+      ],
+      "aliases": [
+        "signed char",
+        "schar",
+        "int8-like if CHAR_BIT==8"
+      ],
+      "readMore": [
+        "signed integer arithmetic",
+        "integer promotions"
+      ]
+    },
+    {
+      "id": "unsigned_char",
+      "names": [
+        "unsigned char",
+        "uchar"
+      ],
+      "availability": "Both C and C++",
+      "kind": "unsigned integer / byte-oriented integer",
+      "definition": "Unsigned integer type with the same size as `char`. Distinct from both `char` and `signed char`.",
+      "summary": "This is the canonical safe choice when you need a byte-sized integer with modular arithmetic and values 0..UCHAR_MAX.\nIt is also commonly used for raw binary data, byte buffers, and object representation inspection.",
+      "standardGuarantee": "Standard guarantee: same size as `char`; minimum maximum value is at least 255 if `CHAR_BIT >= 8`. On mainstream systems it is 8-bit and ranges 0..255.\nUnsigned arithmetic is modulo 2^N where N is the width of the type.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "1 byte, usually 8 bits"
+        }
+      ],
+      "examples": [
+        "unsigned char b = 255;",
+        "unsigned char bytes[16];"
+      ],
+      "specialRules": [
+        "Unsigned overflow is defined wraparound modulo 2^N.",
+        "`unsigned char` is often the least surprising byte type for binary data.",
+        "Do not confuse storage of bytes with text encoding semantics."
+      ],
+      "aliases": [
+        "unsigned char",
+        "uchar",
+        "byte-like"
+      ],
+      "readMore": [
+        "unsigned integer rules",
+        "object representation access"
+      ]
+    },
+    {
+      "id": "wchar_t",
+      "names": [
+        "wchar_t",
+        "wide char"
+      ],
+      "availability": "C: typedef in <stddef.h> / <wchar.h>. C++: fundamental distinct type.",
+      "kind": "wide character / implementation-defined integer-like character type",
+      "definition": "Type intended to hold wide character codes / wide code units. In C it is a typedef name provided by the library; in C++ it is a distinct fundamental type.\nIts width, signedness, and encoding relationship are implementation-defined.",
+      "summary": "Historically used for wide-character APIs, locale-sensitive text, and platform-native wide text interfaces.\nIt is extremely platform-specific: 16-bit on Windows, usually 32-bit on Unix-like systems. Therefore it should not be treated as a portable Unicode code point type without checking the platform contract.",
+      "standardGuarantee": "Standard guarantee: enough to represent all members of the implementation's largest extended character set among the supported locales, subject to the implementation's model.\nThe exact width and signedness are implementation-defined. No fixed Unicode width is promised by the language.",
+      "mainstreamSizes": [
+        {
+          "platform": "Windows / MSVC",
+          "size": "2 bytes, typically UTF-16 code unit"
+        },
+        {
+          "platform": "Linux/macOS GCC/Clang",
+          "size": "4 bytes, often UTF-32-like code unit"
+        }
+      ],
+      "examples": [
+        "L'A'",
+        "wchar_t wc = L'Ж';"
+      ],
+      "specialRules": [
+        "Portable code should not assume that `wchar_t` is Unicode scalar value sized.",
+        "On Windows, one `wchar_t` may hold only one UTF-16 code unit, not necessarily a full Unicode code point.",
+        "In C++, `wchar_t` is a distinct fundamental type and not just a typedef."
+      ],
+      "aliases": [
+        "wchar_t",
+        "wide char"
+      ],
+      "readMore": [
+        "wide character types",
+        "platform text APIs"
+      ]
+    },
+    {
+      "id": "char8_t",
+      "names": [
+        "char8_t",
+        "u8 char",
+        "utf8 char"
+      ],
+      "availability": "C: keyword/type in C23. C++: distinct fundamental type since C++20.",
+      "kind": "UTF-8 code unit type",
+      "definition": "Type intended for UTF-8 code units. It is not the same as `char` or `unsigned char`.\nIn modern C++ it supports `u8` string literal elements; in C23 a corresponding type also exists.",
+      "summary": "Use when you want code to say explicitly 'this object stores UTF-8 code units'. It improves semantic clarity over plain `char` and helps separate text encoding from raw bytes.",
+      "standardGuarantee": "Standard guarantee: width is 8 bits where the type exists for UTF-8 code units. The intent is code-unit semantics, not arbitrary locale-dependent narrow execution encoding semantics.",
+      "mainstreamSizes": [
+        {
+          "platform": "modern compilers with C23 / C++20 support",
+          "size": "1 byte / 8 bits"
+        }
+      ],
+      "examples": [
+        "u8'A'",
+        "u8\"hello\""
+      ],
+      "specialRules": [
+        "Distinct from `char`; overload resolution and template matching in C++ will distinguish them.",
+        "A UTF-8 code point may require multiple `char8_t` code units.",
+        "Existing APIs that take `char*` will usually need explicit adaptation."
+      ],
+      "aliases": [
+        "char8_t",
+        "utf8 code unit"
+      ],
+      "readMore": [
+        "C23 char8_t",
+        "C++20 UTF-8 character type"
+      ]
+    },
+    {
+      "id": "char16_t",
+      "names": [
+        "char16_t",
+        "utf16 char",
+        "u16 char"
+      ],
+      "availability": "C: type since C11. C++: distinct fundamental type since C++11.",
+      "kind": "UTF-16 code unit type",
+      "definition": "Type for UTF-16 code units. Distinct from `unsigned short` and from other character types.",
+      "summary": "This is a code-unit type, not a promise that one object stores one Unicode code point. Supplementary characters require surrogate pairs.",
+      "standardGuarantee": "Standard guarantee: large enough and intended for UTF-16 code units. On mainstream implementations it is 16 bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "modern compilers",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "u'λ'",
+        "u\"hello\""
+      ],
+      "specialRules": [
+        "One Unicode scalar value may require two `char16_t` values.",
+        "Distinct type semantics matter for overloads and templates."
+      ],
+      "aliases": [
+        "char16_t",
+        "utf16 code unit"
+      ],
+      "readMore": [
+        "UTF-16 code units",
+        "C11/C++11 character types"
+      ]
+    },
+    {
+      "id": "char32_t",
+      "names": [
+        "char32_t",
+        "utf32 char",
+        "u32 char"
+      ],
+      "availability": "C: type since C11. C++: distinct fundamental type since C++11.",
+      "kind": "UTF-32 code unit type",
+      "definition": "Type for UTF-32 code units. Distinct from `unsigned int` and from other character types.",
+      "summary": "Usually the least ambiguous standard character type for storing a full Unicode scalar value directly in one object, though normalization and other text semantics still remain separate concerns.",
+      "standardGuarantee": "Standard guarantee: large enough and intended for UTF-32 code units. On mainstream implementations it is 32 bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "modern compilers",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "U'🦀'",
+        "U\"hello\""
+      ],
+      "specialRules": [
+        "Code-unit semantics are still distinct from higher-level text semantics such as grapheme clusters.",
+        "Distinct type semantics matter for overloads and templates."
+      ],
+      "aliases": [
+        "char32_t",
+        "utf32 code unit"
+      ],
+      "readMore": [
+        "UTF-32 code units",
+        "C11/C++11 character types"
+      ]
+    },
+    {
+      "id": "short",
+      "names": [
+        "short",
+        "short int",
+        "signed short",
+        "signed short int"
+      ],
+      "availability": "Both C and C++",
+      "kind": "signed integer",
+      "definition": "short integer type. Spelling variants like `signed short` and `short int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 16 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 16 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 / LLP64 / ILP32 mainstream', 'size': '2 bytes / 16 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 / LLP64 / ILP32 mainstream",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "short",
+        "short int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic."
+      ],
+      "aliases": [
+        "short",
+        "short int",
+        "signed short",
+        "signed short int"
+      ],
+      "commonConfusions": [
+        "`short` is not guaranteed to have exactly 16 bits; 16 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "unsigned_short",
+      "names": [
+        "unsigned short",
+        "unsigned short int",
+        "ushort"
+      ],
+      "availability": "Both C and C++",
+      "kind": "unsigned integer",
+      "definition": "short integer type. Spelling variants like `signed short` and `short int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 16 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 16 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 / LLP64 / ILP32 mainstream', 'size': '2 bytes / 16 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 / LLP64 / ILP32 mainstream",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "unsigned short",
+        "unsigned short int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic.",
+        "Unsigned overflow wraps modulo 2^N."
+      ],
+      "aliases": [
+        "unsigned short",
+        "unsigned short int",
+        "ushort"
+      ],
+      "commonConfusions": [
+        "`unsigned short` is not guaranteed to have exactly 16 bits; 16 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "int",
+      "names": [
+        "int",
+        "signed int",
+        "signed"
+      ],
+      "availability": "Both C and C++",
+      "kind": "signed integer",
+      "definition": "int integer type. Spelling variants like `signed int` and `int int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 16 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 16 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 Unix-like', 'size': '4 bytes / 32 bits'}, {'platform': 'LLP64 Windows', 'size': '4 bytes / 32 bits'}, {'platform': 'ILP32 32-bit targets', 'size': '4 bytes / 32 bits'}, {'platform': 'small embedded targets', 'size': 'may be 2 bytes / 16 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "small embedded targets",
+          "size": "may be 2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "int",
+        "signed int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic."
+      ],
+      "aliases": [
+        "int",
+        "signed int",
+        "signed"
+      ],
+      "commonConfusions": [
+        "`int` is not guaranteed to have exactly 16 bits; 16 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "unsigned_int",
+      "names": [
+        "unsigned int",
+        "unsigned",
+        "uint"
+      ],
+      "availability": "Both C and C++",
+      "kind": "unsigned integer",
+      "definition": "int integer type. Spelling variants like `signed int` and `int int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 16 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 16 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 Unix-like', 'size': '4 bytes / 32 bits'}, {'platform': 'LLP64 Windows', 'size': '4 bytes / 32 bits'}, {'platform': 'small embedded targets', 'size': 'may be 2 bytes / 16 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "small embedded targets",
+          "size": "may be 2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "unsigned int",
+        "unsigned"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic.",
+        "Unsigned overflow wraps modulo 2^N; this is defined behavior."
+      ],
+      "aliases": [
+        "unsigned int",
+        "unsigned",
+        "uint"
+      ],
+      "commonConfusions": [
+        "`unsigned int` is not guaranteed to have exactly 16 bits; 16 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "long",
+      "names": [
+        "long",
+        "long int",
+        "signed long",
+        "signed long int"
+      ],
+      "availability": "Both C and C++",
+      "kind": "signed integer",
+      "definition": "long integer type. Spelling variants like `signed long` and `long int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 32 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 32 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 Unix-like', 'size': '8 bytes / 64 bits'}, {'platform': 'LLP64 Windows', 'size': '4 bytes / 32 bits'}, {'platform': 'ILP32 32-bit targets', 'size': '4 bytes / 32 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "long",
+        "long int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic."
+      ],
+      "aliases": [
+        "long",
+        "long int",
+        "signed long",
+        "signed long int"
+      ],
+      "commonConfusions": [
+        "`long` is not guaranteed to have exactly 32 bits; 32 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "unsigned_long",
+      "names": [
+        "unsigned long",
+        "unsigned long int",
+        "ulong"
+      ],
+      "availability": "Both C and C++",
+      "kind": "unsigned integer",
+      "definition": "long integer type. Spelling variants like `signed long` and `long int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 32 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 32 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 Unix-like', 'size': '8 bytes / 64 bits'}, {'platform': 'LLP64 Windows', 'size': '4 bytes / 32 bits'}, {'platform': 'ILP32 32-bit targets', 'size': '4 bytes / 32 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "unsigned long",
+        "unsigned long int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic.",
+        "Unsigned overflow wraps modulo 2^N."
+      ],
+      "aliases": [
+        "unsigned long",
+        "unsigned long int",
+        "ulong"
+      ],
+      "commonConfusions": [
+        "`unsigned long` is not guaranteed to have exactly 32 bits; 32 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "long_long",
+      "names": [
+        "long long",
+        "long long int",
+        "signed long long",
+        "signed long long int"
+      ],
+      "availability": "Both C and C++",
+      "kind": "signed integer",
+      "definition": "long long integer type. Spelling variants like `signed long long` and `long long int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 64 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 64 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 / LLP64 / ILP32 mainstream', 'size': '8 bytes / 64 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 / LLP64 / ILP32 mainstream",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "long long",
+        "long long int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic."
+      ],
+      "aliases": [
+        "long long",
+        "long long int",
+        "signed long long",
+        "signed long long int"
+      ],
+      "commonConfusions": [
+        "`long long` is not guaranteed to have exactly 64 bits; 64 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "unsigned_long_long",
+      "names": [
+        "unsigned long long",
+        "unsigned long long int",
+        "ull",
+        "ulong long"
+      ],
+      "availability": "Both C and C++",
+      "kind": "unsigned integer",
+      "definition": "long long integer type. Spelling variants like `signed long long` and `long long int` refer to the same type.",
+      "summary": "Core arithmetic integer type in the standard rank hierarchy. This is one of the built-in integer types used for ordinary numeric work and integer promotions.\nOn mainstream systems the width is commonly 64 bits or more depending on the rank.",
+      "standardGuarantee": "Standard guarantee: minimum width is 64 bits. The standard specifies relative ordering of widths/ranks rather than a single universal size for all targets.\nMainstream practice is [{'platform': 'LP64 / LLP64 / ILP32 mainstream', 'size': '8 bytes / 64 bits'}]. Signed overflow is undefined behavior for built-in signed arithmetic; unsigned arithmetic is modulo 2^N.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 / LLP64 / ILP32 mainstream",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "unsigned long long",
+        "unsigned long long int"
+      ],
+      "specialRules": [
+        "Integer promotions often convert narrower integer types to `int` or `unsigned int` before arithmetic.",
+        "The exact ABI size is implementation-defined except for fixed-width typedef families like int32_t when they exist.",
+        "Use exact-width typedefs for serialization/protocol/layout requirements; use built-in rank types for natural machine arithmetic.",
+        "Unsigned overflow wraps modulo 2^N."
+      ],
+      "aliases": [
+        "unsigned long long",
+        "unsigned long long int",
+        "ull",
+        "ulong long"
+      ],
+      "commonConfusions": [
+        "`unsigned long long` is not guaranteed to have exactly 64 bits; 64 is a floor, not a universal exact size."
+      ],
+      "readMore": [
+        "integer types",
+        "integer promotions",
+        "usual arithmetic conversions"
+      ]
+    },
+    {
+      "id": "size_t",
+      "names": [
+        "size_t",
+        "std::size_t"
+      ],
+      "availability": "C: typedef in <stddef.h> and related headers. C++: typedef / using in <cstddef> and other library headers, often visible as `std::size_t`.",
+      "kind": "unsigned size / object size type",
+      "definition": "Unsigned integer type returned by `sizeof` and used to represent sizes of objects in bytes.\nIn C++ user code most explicitly sees `std::size_t`, though plain `size_t` may be injected by headers.",
+      "summary": "Use for array sizes, buffer lengths, object sizes, and container size APIs. It is the natural type for byte counts from the language/library point of view,\nbut it is not automatically the right choice for every integer loop or difference calculation.",
+      "standardGuarantee": "Standard guarantee: large enough to represent the size in bytes of any object that can exist in the implementation.\nExact width is implementation-defined and tracks the data model / ABI. It is usually the same width as a pointer-sized unsigned integer on mainstream systems.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "16-bit embedded",
+          "size": "may be 2 bytes / 16 bits"
+        }
+      ],
+      "targetSizes": {
+        "lp64": "64 bits",
+        "llp64": "64 bits",
+        "ilp32": "32 bits"
+      },
+      "examples": [
+        "sizeof(x)",
+        "std::vector<int>::size_type",
+        "size_t n = 1024;"
+      ],
+      "specialRules": [
+        "It is unsigned. Subtracting two sizes can underflow if the result is negative.",
+        "Mixing signed loop indices with `size_t` often produces signed/unsigned comparison warnings or bugs.",
+        "Prefer `ptrdiff_t` for pointer differences or signed sizes that may become negative.",
+        "`size_t` is an alias / typedef, not a separate fundamental arithmetic category."
+      ],
+      "aliases": [
+        "size_t",
+        "std::size_t"
+      ],
+      "commonConfusions": [
+        "`size_t` is not guaranteed to be the same as `unsigned long` or `unsigned long long` on all platforms.",
+        "`size_t` is about sizes, not necessarily about every pointer round-trip; for that see `uintptr_t` when available."
+      ],
+      "readMore": [
+        "sizeof",
+        "<stddef.h>",
+        "<cstddef>"
+      ]
+    },
+    {
+      "id": "ptrdiff_t",
+      "names": [
+        "ptrdiff_t",
+        "std::ptrdiff_t"
+      ],
+      "availability": "C: typedef in <stddef.h>. C++: typedef / using in <cstddef>.",
+      "kind": "signed pointer difference type",
+      "definition": "Signed integer type of the result of subtracting two pointers to elements of the same array object (or one past the end) when the subtraction is well-defined.",
+      "summary": "Use when you need a signed distance between positions in the same object range. It is the signed counterpart conceptually adjacent to `size_t`, but not simply 'signed size_t' by rule.",
+      "standardGuarantee": "Standard guarantee: able to represent the result of subtracting two pointers into the same array object, subject to the implementation's limits.\nExact width is implementation-defined, usually pointer-sized signed integer width on mainstream platforms.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "LLP64 Windows",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "targetSizes": {
+        "lp64": "64 bits",
+        "llp64": "64 bits",
+        "ilp32": "32 bits"
+      },
+      "examples": [
+        "p2 - p1",
+        "std::ptrdiff_t d = end - begin;"
+      ],
+      "specialRules": [
+        "Pointer subtraction is only defined within the same array object (including one-past-end).",
+        "`ptrdiff_t` can be narrower than theoretical address space on unusual targets, but must be sufficient for valid same-array pointer differences under the implementation's model.",
+        "Do not use it for arbitrary integer serialization layout unless you control the ABI."
+      ],
+      "aliases": [
+        "ptrdiff_t",
+        "std::ptrdiff_t"
+      ],
+      "readMore": [
+        "pointer subtraction",
+        "<stddef.h>",
+        "<cstddef>"
+      ]
+    },
+    {
+      "id": "ssize_t",
+      "names": [
+        "ssize_t"
+      ],
+      "availability": "POSIX / Unix extension; not standard C or standard C++",
+      "kind": "signed size-like extension type",
+      "definition": "POSIX signed counterpart commonly paired with APIs that return either a nonnegative byte count or -1 for error.",
+      "summary": "Frequently seen in Unix system interfaces such as `read`, `write`, and related APIs. Very common in practice, but not part of ISO C or ISO C++.",
+      "standardGuarantee": "No ISO C/C++ guarantee. On mainstream POSIX systems it is usually the signed type corresponding to the width of `size_t`.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64 Unix-like",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "ILP32 32-bit Unix-like",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "ssize_t n = read(fd, buf, count);"
+      ],
+      "specialRules": [
+        "Treat as platform / POSIX API type, not portable ISO-language core type.",
+        "Useful when a nonnegative count and a negative sentinel must coexist in one return type."
+      ],
+      "aliases": [
+        "ssize_t"
+      ],
+      "readMore": [
+        "POSIX ssize_t",
+        "Unix system calls"
+      ]
+    },
+    {
+      "id": "int8_t",
+      "names": [
+        "int8_t",
+        "std::int8_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width signed integer typedef",
+      "definition": "Exact-width signed integer typedef with exactly 8 value bits and no padding bits, if the implementation provides it.",
+      "summary": "Preferred type when serialized layout, protocol fields, binary file formats, SIMD lane widths, or cross-language ABI contracts need an exact signed width of 8 bits.",
+      "standardGuarantee": "Standard guarantee: if `int8_t` exists, it has exactly 8 bits of width and two's-complement-style ordinary range behavior for that width on mainstream implementations.\nThe standard does not require every implementation to provide every exact-width typedef unless the implementation has a suitable underlying type.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "int8_t x = 0;",
+        "std::int8_t y = -1;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Best choice for wire formats and binary interchange when available.",
+        "Still participates in integer promotions."
+      ],
+      "aliases": [
+        "int8_t",
+        "std::int8_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "uint8_t",
+      "names": [
+        "uint8_t",
+        "std::uint8_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width unsigned integer typedef",
+      "definition": "Exact-width unsigned integer typedef with exactly 8 bits, if the implementation provides it.",
+      "summary": "Preferred unsigned exact-width type for packet headers, file formats, hashes, low-level bit manipulation, and stable binary layout of 8 bits.",
+      "standardGuarantee": "Standard guarantee: if `uint8_t` exists, it has exactly 8 bits. Unsigned arithmetic is modulo 2^8.\nThe standard only requires it when the implementation has a suitable underlying type with that exact width and no padding bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "uint8_t mask = 0xff;",
+        "std::uint8_t bits = 0;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Overflow is defined wrap modulo 2^8.",
+        "Excellent for bit-level protocols and binary interchange."
+      ],
+      "aliases": [
+        "uint8_t",
+        "std::uint8_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "int16_t",
+      "names": [
+        "int16_t",
+        "std::int16_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width signed integer typedef",
+      "definition": "Exact-width signed integer typedef with exactly 16 value bits and no padding bits, if the implementation provides it.",
+      "summary": "Preferred type when serialized layout, protocol fields, binary file formats, SIMD lane widths, or cross-language ABI contracts need an exact signed width of 16 bits.",
+      "standardGuarantee": "Standard guarantee: if `int16_t` exists, it has exactly 16 bits of width and two's-complement-style ordinary range behavior for that width on mainstream implementations.\nThe standard does not require every implementation to provide every exact-width typedef unless the implementation has a suitable underlying type.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "int16_t x = 0;",
+        "std::int16_t y = -1;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Best choice for wire formats and binary interchange when available.",
+        "Still participates in integer promotions."
+      ],
+      "aliases": [
+        "int16_t",
+        "std::int16_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "uint16_t",
+      "names": [
+        "uint16_t",
+        "std::uint16_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width unsigned integer typedef",
+      "definition": "Exact-width unsigned integer typedef with exactly 16 bits, if the implementation provides it.",
+      "summary": "Preferred unsigned exact-width type for packet headers, file formats, hashes, low-level bit manipulation, and stable binary layout of 16 bits.",
+      "standardGuarantee": "Standard guarantee: if `uint16_t` exists, it has exactly 16 bits. Unsigned arithmetic is modulo 2^16.\nThe standard only requires it when the implementation has a suitable underlying type with that exact width and no padding bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "uint16_t mask = 0xff;",
+        "std::uint16_t bits = 0;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Overflow is defined wrap modulo 2^16.",
+        "Excellent for bit-level protocols and binary interchange."
+      ],
+      "aliases": [
+        "uint16_t",
+        "std::uint16_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "int32_t",
+      "names": [
+        "int32_t",
+        "std::int32_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width signed integer typedef",
+      "definition": "Exact-width signed integer typedef with exactly 32 value bits and no padding bits, if the implementation provides it.",
+      "summary": "Preferred type when serialized layout, protocol fields, binary file formats, SIMD lane widths, or cross-language ABI contracts need an exact signed width of 32 bits.",
+      "standardGuarantee": "Standard guarantee: if `int32_t` exists, it has exactly 32 bits of width and two's-complement-style ordinary range behavior for that width on mainstream implementations.\nThe standard does not require every implementation to provide every exact-width typedef unless the implementation has a suitable underlying type.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "int32_t x = 0;",
+        "std::int32_t y = -1;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Best choice for wire formats and binary interchange when available.",
+        "Still participates in integer promotions."
+      ],
+      "aliases": [
+        "int32_t",
+        "std::int32_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "uint32_t",
+      "names": [
+        "uint32_t",
+        "std::uint32_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width unsigned integer typedef",
+      "definition": "Exact-width unsigned integer typedef with exactly 32 bits, if the implementation provides it.",
+      "summary": "Preferred unsigned exact-width type for packet headers, file formats, hashes, low-level bit manipulation, and stable binary layout of 32 bits.",
+      "standardGuarantee": "Standard guarantee: if `uint32_t` exists, it has exactly 32 bits. Unsigned arithmetic is modulo 2^32.\nThe standard only requires it when the implementation has a suitable underlying type with that exact width and no padding bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "uint32_t mask = 0xff;",
+        "std::uint32_t bits = 0;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Overflow is defined wrap modulo 2^32.",
+        "Excellent for bit-level protocols and binary interchange."
+      ],
+      "aliases": [
+        "uint32_t",
+        "std::uint32_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "int64_t",
+      "names": [
+        "int64_t",
+        "std::int64_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width signed integer typedef",
+      "definition": "Exact-width signed integer typedef with exactly 64 value bits and no padding bits, if the implementation provides it.",
+      "summary": "Preferred type when serialized layout, protocol fields, binary file formats, SIMD lane widths, or cross-language ABI contracts need an exact signed width of 64 bits.",
+      "standardGuarantee": "Standard guarantee: if `int64_t` exists, it has exactly 64 bits of width and two's-complement-style ordinary range behavior for that width on mainstream implementations.\nThe standard does not require every implementation to provide every exact-width typedef unless the implementation has a suitable underlying type.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "int64_t x = 0;",
+        "std::int64_t y = -1;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Best choice for wire formats and binary interchange when available.",
+        "Still participates in integer promotions."
+      ],
+      "aliases": [
+        "int64_t",
+        "std::int64_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "uint64_t",
+      "names": [
+        "uint64_t",
+        "std::uint64_t"
+      ],
+      "availability": "C: <stdint.h> if provided. C++: <cstdint> if provided.",
+      "kind": "exact-width unsigned integer typedef",
+      "definition": "Exact-width unsigned integer typedef with exactly 64 bits, if the implementation provides it.",
+      "summary": "Preferred unsigned exact-width type for packet headers, file formats, hashes, low-level bit manipulation, and stable binary layout of 64 bits.",
+      "standardGuarantee": "Standard guarantee: if `uint64_t` exists, it has exactly 64 bits. Unsigned arithmetic is modulo 2^64.\nThe standard only requires it when the implementation has a suitable underlying type with that exact width and no padding bits.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "uint64_t mask = 0xff;",
+        "std::uint64_t bits = 0;"
+      ],
+      "specialRules": [
+        "Existence is conditional on implementation support.",
+        "Overflow is defined wrap modulo 2^64.",
+        "Excellent for bit-level protocols and binary interchange."
+      ],
+      "aliases": [
+        "uint64_t",
+        "std::uint64_t"
+      ],
+      "readMore": [
+        "<stdint.h>",
+        "<cstdint>",
+        "exact-width integer typedefs"
+      ]
+    },
+    {
+      "id": "int_least8_t",
+      "names": [
+        "int_least8_t",
+        "std::int_least8_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 8 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback when exact width is not available or not required, but you need at least 8 bits.",
+      "standardGuarantee": "Standard guarantee: exists if the implementation provides the <stdint.h>/<cstdint> family; width is at least 8 bits.",
+      "examples": [
+        "int_least8_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "int_least8_t",
+        "std::int_least8_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "uint_least8_t",
+      "names": [
+        "uint_least8_t",
+        "std::uint_least8_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 8 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback for bit counts / storage where at least 8 bits are required and exact width is not necessary.",
+      "standardGuarantee": "Standard guarantee: width is at least 8 bits. Unsigned arithmetic is modulo 2^N for the actual width N.",
+      "examples": [
+        "uint_least8_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "uint_least8_t",
+        "std::uint_least8_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "int_fast8_t",
+      "names": [
+        "int_fast8_t",
+        "std::int_fast8_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 8 bits that the implementation considers efficient for ordinary use.",
+      "summary": "Use when you care more about natural efficient arithmetic than about exact object size, while still needing at least 8 bits.",
+      "standardGuarantee": "Standard guarantee: width is at least 8 bits; exact chosen type is implementation-defined.",
+      "examples": [
+        "int_fast8_t counter;"
+      ],
+      "specialRules": [
+        "Often maps to the natural machine register width rather than the smallest width."
+      ],
+      "aliases": [
+        "int_fast8_t",
+        "std::int_fast8_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "uint_fast8_t",
+      "names": [
+        "uint_fast8_t",
+        "std::uint_fast8_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 8 bits that the implementation considers efficient for arithmetic.",
+      "summary": "Useful for counters / masks where at least 8 bits are needed and native fast width is preferable.",
+      "standardGuarantee": "Standard guarantee: width is at least 8 bits; exact chosen type is implementation-defined. Unsigned arithmetic wraps modulo 2^N of the actual width.",
+      "examples": [
+        "uint_fast8_t flags;"
+      ],
+      "specialRules": [
+        "May be much wider than the number in its name suggests."
+      ],
+      "aliases": [
+        "uint_fast8_t",
+        "std::uint_fast8_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "int_least16_t",
+      "names": [
+        "int_least16_t",
+        "std::int_least16_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 16 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback when exact width is not available or not required, but you need at least 16 bits.",
+      "standardGuarantee": "Standard guarantee: exists if the implementation provides the <stdint.h>/<cstdint> family; width is at least 16 bits.",
+      "examples": [
+        "int_least16_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "int_least16_t",
+        "std::int_least16_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "uint_least16_t",
+      "names": [
+        "uint_least16_t",
+        "std::uint_least16_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 16 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback for bit counts / storage where at least 16 bits are required and exact width is not necessary.",
+      "standardGuarantee": "Standard guarantee: width is at least 16 bits. Unsigned arithmetic is modulo 2^N for the actual width N.",
+      "examples": [
+        "uint_least16_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "uint_least16_t",
+        "std::uint_least16_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "int_fast16_t",
+      "names": [
+        "int_fast16_t",
+        "std::int_fast16_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 16 bits that the implementation considers efficient for ordinary use.",
+      "summary": "Use when you care more about natural efficient arithmetic than about exact object size, while still needing at least 16 bits.",
+      "standardGuarantee": "Standard guarantee: width is at least 16 bits; exact chosen type is implementation-defined.",
+      "examples": [
+        "int_fast16_t counter;"
+      ],
+      "specialRules": [
+        "Often maps to the natural machine register width rather than the smallest width."
+      ],
+      "aliases": [
+        "int_fast16_t",
+        "std::int_fast16_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "uint_fast16_t",
+      "names": [
+        "uint_fast16_t",
+        "std::uint_fast16_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 16 bits that the implementation considers efficient for arithmetic.",
+      "summary": "Useful for counters / masks where at least 16 bits are needed and native fast width is preferable.",
+      "standardGuarantee": "Standard guarantee: width is at least 16 bits; exact chosen type is implementation-defined. Unsigned arithmetic wraps modulo 2^N of the actual width.",
+      "examples": [
+        "uint_fast16_t flags;"
+      ],
+      "specialRules": [
+        "May be much wider than the number in its name suggests."
+      ],
+      "aliases": [
+        "uint_fast16_t",
+        "std::uint_fast16_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "int_least32_t",
+      "names": [
+        "int_least32_t",
+        "std::int_least32_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 32 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback when exact width is not available or not required, but you need at least 32 bits.",
+      "standardGuarantee": "Standard guarantee: exists if the implementation provides the <stdint.h>/<cstdint> family; width is at least 32 bits.",
+      "examples": [
+        "int_least32_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "int_least32_t",
+        "std::int_least32_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "uint_least32_t",
+      "names": [
+        "uint_least32_t",
+        "std::uint_least32_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 32 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback for bit counts / storage where at least 32 bits are required and exact width is not necessary.",
+      "standardGuarantee": "Standard guarantee: width is at least 32 bits. Unsigned arithmetic is modulo 2^N for the actual width N.",
+      "examples": [
+        "uint_least32_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "uint_least32_t",
+        "std::uint_least32_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "int_fast32_t",
+      "names": [
+        "int_fast32_t",
+        "std::int_fast32_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 32 bits that the implementation considers efficient for ordinary use.",
+      "summary": "Use when you care more about natural efficient arithmetic than about exact object size, while still needing at least 32 bits.",
+      "standardGuarantee": "Standard guarantee: width is at least 32 bits; exact chosen type is implementation-defined.",
+      "examples": [
+        "int_fast32_t counter;"
+      ],
+      "specialRules": [
+        "Often maps to the natural machine register width rather than the smallest width."
+      ],
+      "aliases": [
+        "int_fast32_t",
+        "std::int_fast32_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "uint_fast32_t",
+      "names": [
+        "uint_fast32_t",
+        "std::uint_fast32_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 32 bits that the implementation considers efficient for arithmetic.",
+      "summary": "Useful for counters / masks where at least 32 bits are needed and native fast width is preferable.",
+      "standardGuarantee": "Standard guarantee: width is at least 32 bits; exact chosen type is implementation-defined. Unsigned arithmetic wraps modulo 2^N of the actual width.",
+      "examples": [
+        "uint_fast32_t flags;"
+      ],
+      "specialRules": [
+        "May be much wider than the number in its name suggests."
+      ],
+      "aliases": [
+        "uint_fast32_t",
+        "std::uint_fast32_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "int_least64_t",
+      "names": [
+        "int_least64_t",
+        "std::int_least64_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 64 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback when exact width is not available or not required, but you need at least 64 bits.",
+      "standardGuarantee": "Standard guarantee: exists if the implementation provides the <stdint.h>/<cstdint> family; width is at least 64 bits.",
+      "examples": [
+        "int_least64_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "int_least64_t",
+        "std::int_least64_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "uint_least64_t",
+      "names": [
+        "uint_least64_t",
+        "std::uint_least64_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 64 value bits; chosen as the smallest supported type meeting that requirement.",
+      "summary": "Portable fallback for bit counts / storage where at least 64 bits are required and exact width is not necessary.",
+      "standardGuarantee": "Standard guarantee: width is at least 64 bits. Unsigned arithmetic is modulo 2^N for the actual width N.",
+      "examples": [
+        "uint_least64_t x;"
+      ],
+      "specialRules": [
+        "The implementation may map this to a wider type than the exact-width family."
+      ],
+      "aliases": [
+        "uint_least64_t",
+        "std::uint_least64_t"
+      ],
+      "readMore": [
+        "minimum-width typedefs"
+      ]
+    },
+    {
+      "id": "int_fast64_t",
+      "names": [
+        "int_fast64_t",
+        "std::int_fast64_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width signed integer typedef",
+      "definition": "Signed integer type with at least 64 bits that the implementation considers efficient for ordinary use.",
+      "summary": "Use when you care more about natural efficient arithmetic than about exact object size, while still needing at least 64 bits.",
+      "standardGuarantee": "Standard guarantee: width is at least 64 bits; exact chosen type is implementation-defined.",
+      "examples": [
+        "int_fast64_t counter;"
+      ],
+      "specialRules": [
+        "Often maps to the natural machine register width rather than the smallest width."
+      ],
+      "aliases": [
+        "int_fast64_t",
+        "std::int_fast64_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "uint_fast64_t",
+      "names": [
+        "uint_fast64_t",
+        "std::uint_fast64_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "fast minimum-width unsigned integer typedef",
+      "definition": "Unsigned integer type with at least 64 bits that the implementation considers efficient for arithmetic.",
+      "summary": "Useful for counters / masks where at least 64 bits are needed and native fast width is preferable.",
+      "standardGuarantee": "Standard guarantee: width is at least 64 bits; exact chosen type is implementation-defined. Unsigned arithmetic wraps modulo 2^N of the actual width.",
+      "examples": [
+        "uint_fast64_t flags;"
+      ],
+      "specialRules": [
+        "May be much wider than the number in its name suggests."
+      ],
+      "aliases": [
+        "uint_fast64_t",
+        "std::uint_fast64_t"
+      ],
+      "readMore": [
+        "fast integer typedefs"
+      ]
+    },
+    {
+      "id": "intptr_t",
+      "names": [
+        "intptr_t",
+        "std::intptr_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "pointer-width signed integer typedef",
+      "definition": "Signed integer type capable of holding a converted object pointer round-trip when the implementation provides it.",
+      "summary": "Useful for low-level runtime code, tagged pointers, FFI glue, and integer storage of object-pointer values when the implementation explicitly supports that contract.",
+      "standardGuarantee": "Standard guarantee: optional. If provided, it can represent a converted `void*` / object pointer value suitably for round-trip under the implementation's rules.\nWidth is usually pointer size.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64/LLP64 64-bit targets",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "intptr_t bits = (intptr_t)p;"
+      ],
+      "specialRules": [
+        "Availability is optional.",
+        "Pointer provenance / strict aliasing / round-trip semantics are subtler than raw width alone, especially in modern abstract machine discussions.",
+        "Do not assume function pointers convert the same way as object pointers."
+      ],
+      "aliases": [
+        "intptr_t",
+        "std::intptr_t"
+      ],
+      "readMore": [
+        "pointer-integer round-trip rules"
+      ]
+    },
+    {
+      "id": "uintptr_t",
+      "names": [
+        "uintptr_t",
+        "std::uintptr_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "pointer-width unsigned integer typedef",
+      "definition": "Unsigned integer type capable of holding a converted object pointer value when the implementation provides it.",
+      "summary": "Common for bit manipulation on pointer values, address formatting, hashing support, and FFI bridges. Still a low-level type with sharp edges.",
+      "standardGuarantee": "Standard guarantee: optional. If provided, it can represent a converted object pointer value. Exact width usually matches pointer width.",
+      "mainstreamSizes": [
+        {
+          "platform": "LP64/LLP64 64-bit targets",
+          "size": "8 bytes / 64 bits"
+        },
+        {
+          "platform": "ILP32 32-bit targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "uintptr_t raw = (uintptr_t)p;"
+      ],
+      "specialRules": [
+        "Availability is optional.",
+        "A wide enough integer does not automatically preserve all semantic pointer properties in every optimization/provenance model.",
+        "Unsigned arithmetic wraps modulo 2^N."
+      ],
+      "aliases": [
+        "uintptr_t",
+        "std::uintptr_t"
+      ],
+      "readMore": [
+        "pointer-integer round-trip rules"
+      ]
+    },
+    {
+      "id": "intmax_t",
+      "names": [
+        "intmax_t",
+        "std::intmax_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "maximum-width signed integer typedef",
+      "definition": "Widest signed integer type that the implementation provides in the standard typedef family.",
+      "summary": "Useful for generic formatting, generic integer utilities, and code that wants 'largest standard signed integer type here' rather than an ABI-fixed width.",
+      "standardGuarantee": "Standard guarantee: exists with the <stdint.h>/<cstdint> family. Exact width is implementation-defined and at least as wide as every other standard signed integer type provided in that family.",
+      "examples": [
+        "intmax_t v;",
+        "std::intmax_t big;"
+      ],
+      "specialRules": [
+        "May be the same as `long long`, `long`, or a wider extension-backed standard typedef depending on the implementation.",
+        "Not a substitute for arbitrary precision."
+      ],
+      "aliases": [
+        "intmax_t",
+        "std::intmax_t"
+      ],
+      "readMore": [
+        "maximum-width integer typedefs"
+      ]
+    },
+    {
+      "id": "uintmax_t",
+      "names": [
+        "uintmax_t",
+        "std::uintmax_t"
+      ],
+      "availability": "C/C++ optional typedef family in <stdint.h>/<cstdint>",
+      "kind": "maximum-width unsigned integer typedef",
+      "definition": "Widest unsigned integer type in the standard typedef family.",
+      "summary": "Good for generic unsigned integer utilities and generic formatting, but not a promise of 'largest possible integer in all extensions forever'.",
+      "standardGuarantee": "Standard guarantee: exists with the family. Width is at least that of every other standard unsigned integer typedef in the family.",
+      "examples": [
+        "uintmax_t u;",
+        "std::uintmax_t mask;"
+      ],
+      "specialRules": [
+        "Unsigned arithmetic wraps modulo 2^N.",
+        "May still be insufficient for some external big-number tasks."
+      ],
+      "aliases": [
+        "uintmax_t",
+        "std::uintmax_t"
+      ],
+      "readMore": [
+        "maximum-width integer typedefs"
+      ]
+    },
+    {
+      "id": "float",
+      "names": [
+        "float"
+      ],
+      "availability": "Both C and C++",
+      "kind": "floating-point",
+      "definition": "Standard single-precision floating type. On mainstream IEC 60559 / IEEE 754 implementations this is binary32.",
+      "summary": "Typical choice when memory footprint or vector width matters more than maximum precision. About 6-7 reliable decimal digits on mainstream binary32 implementations.",
+      "standardGuarantee": "Standard guarantee: at least the minimum precision/range described by the language's floating characteristics macros / limits.\nExact IEC 60559 conformance is implementation-defined unless the implementation documents it; mainstream compilers on modern CPUs generally use IEEE 754 binary32 semantics.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "On binary32 systems: 24 bits of precision including the implicit leading bit, approximately 6-7 decimal digits.\nExact integers are representable only up to 2^24 without gaps.",
+      "rounding": "Converting a mathematical real value or a higher-precision floating value to `float` generally rounds to the nearest representable value according to the active implementation/IEEE rounding mode.\nOn mainstream IEEE setups the default mode is round to nearest, ties to even.",
+      "examples": [
+        "1.0f",
+        "3.1415927f",
+        "16777216.0f",
+        "0.1f"
+      ],
+      "specialRules": [
+        "`0.1f` is not exactly representable in binary32.",
+        "Comparing floats for exact equality is often fragile unless exact representability is intended.",
+        "Overflow usually produces infinity on IEEE systems; exceptional behavior depends on FP environment / implementation model.",
+        "Subnormals, NaNs, signed zero, and infinities matter for edge cases."
+      ],
+      "aliases": [
+        "float",
+        "single",
+        "binary32 on mainstream targets"
+      ],
+      "commonConfusions": [
+        "Decimal digits in source do not imply exact decimal storage.",
+        "A value may print as 0.1 yet not be exactly 1/10."
+      ],
+      "readMore": [
+        "floating characteristics macros",
+        "numeric_limits<float>",
+        "IEEE 754 binary32"
+      ]
+    },
+    {
+      "id": "double",
+      "names": [
+        "double"
+      ],
+      "availability": "Both C and C++",
+      "kind": "floating-point",
+      "definition": "Standard double-precision floating type. On mainstream implementations this is IEEE 754 binary64.",
+      "summary": "The ordinary default floating type in most C and C++ code. Offers about 15-16 reliable decimal digits on mainstream binary64 systems and a much wider exact-integer range than `float`.",
+      "standardGuarantee": "Standard guarantee: at least as much precision and range as `float`. Exact IEEE binary64 is not mandated by the core language everywhere, but it is the overwhelming mainstream reality.",
+      "mainstreamSizes": [
+        {
+          "platform": "mainstream desktops/servers",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "On binary64 systems: 53 bits of precision including the implicit leading bit, approximately 15-16 decimal digits.\nAll integers with magnitude up to 2^53 are exactly representable.",
+      "rounding": "Conversion to `double` rounds to representable values using the implementation's floating environment. On mainstream IEEE systems the default is round to nearest, ties to even.",
+      "examples": [
+        "1.0",
+        "3.141592653589793",
+        "9007199254740992.0",
+        "0.1"
+      ],
+      "specialRules": [
+        "`0.1` is not exactly representable in binary64.",
+        "After 2^53, adjacent integers are no longer all representable.",
+        "NaN never compares equal to itself.",
+        "Signed zero can affect division and some branchless numeric code."
+      ],
+      "aliases": [
+        "double",
+        "binary64 on mainstream targets"
+      ],
+      "readMore": [
+        "IEEE 754 binary64",
+        "std::numeric_limits<double>"
+      ]
+    },
+    {
+      "id": "long_double",
+      "names": [
+        "long double"
+      ],
+      "availability": "Both C and C++",
+      "kind": "extended floating-point",
+      "definition": "Extended floating-point type with precision/range at least that of `double`. This is one of the most implementation-dependent arithmetic types in the language.",
+      "summary": "Meant to provide more precision or range than `double`, but the actual representation varies significantly by compiler, target, and ABI.\nOn x86 GCC/Clang it is often 80-bit extended precision stored in 12 or 16 bytes; on MSVC it is usually just an alias in behavior to `double`; on some platforms it may be IEEE binary128.",
+      "standardGuarantee": "Standard guarantee: at least as much precision as `double`. Exact format, size, padding, and encoding are implementation-defined.\nTherefore portable code should not assume one universal width or one universal decimal-digit count.",
+      "mainstreamSizes": [
+        {
+          "platform": "GCC/Clang x86/x86-64 System V",
+          "size": "typically 16 bytes storage for 80-bit extended precision"
+        },
+        {
+          "platform": "MSVC x86/x64",
+          "size": "8 bytes, usually same precision as double"
+        },
+        {
+          "platform": "some PowerPC / special ABIs",
+          "size": "may be 16 bytes / binary128 or double-double"
+        }
+      ],
+      "precision": "Depends on implementation. Common cases:\n- x87 extended precision: about 64 bits of significand precision.\n- alias-to-double implementations: same 53-bit precision as `double`.\n- binary128 implementations: 113 bits of precision.",
+      "rounding": "Same broad rounding principles as other floating types, but intermediate precision, excess precision, and storage format behavior can vary with ABI, compiler options, and evaluation method.",
+      "examples": [
+        "1.0L",
+        "3.141592653589793238462643383279502884L"
+      ],
+      "specialRules": [
+        "Never assume `sizeof(long double) > sizeof(double)` implies binary128.",
+        "Never assume `long double` has the same behavior across GCC/Clang/MSVC.",
+        "Serialization / ABI exchange of `long double` is notoriously non-portable."
+      ],
+      "aliases": [
+        "long double",
+        "extended precision"
+      ],
+      "readMore": [
+        "std::numeric_limits<long double>",
+        "FLT_EVAL_METHOD",
+        "ABI documentation"
+      ]
+    },
+    {
+      "id": "float16",
+      "names": [
+        "_Float16"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float16 is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float16 x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float16"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float32",
+      "names": [
+        "_Float32"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float32 is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float32 x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float32"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float64",
+      "names": [
+        "_Float64"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float64 is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float64 x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float64"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float128",
+      "names": [
+        "_Float128"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float128 is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float128 x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float128"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float32x",
+      "names": [
+        "_Float32x"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float32x is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float32x x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float32x"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float64x",
+      "names": [
+        "_Float64x"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float64x is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float64x x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float64x"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    },
+    {
+      "id": "float128x",
+      "names": [
+        "_Float128x"
+      ],
+      "availability": "C floating extension family from TS/IEC 60559 integration; availability depends on compiler/library support. Not standard C++ core arithmetic types.",
+      "kind": "extended / IEC 60559 floating type",
+      "definition": "_Float128x is part of the C floating extension family for explicitly named IEC 60559-oriented formats or extended formats.",
+      "summary": "Use only when you intentionally target implementations that expose this family. Excellent for explicit FP-width intent, poor for broad portability unless you control the toolchain.",
+      "standardGuarantee": "Availability and exact support depend on implementation. Where supported, the name corresponds to an intended IEC 60559 format family rather than the looser built-in `float`/`double`/`long double` portability model.",
+      "examples": [
+        "_Float128x x;"
+      ],
+      "specialRules": [
+        "Support varies significantly by compiler, target, library, and language mode.",
+        "Not generally a portable baseline for mixed C/C++ codebases."
+      ],
+      "aliases": [
+        "_Float128x"
+      ],
+      "readMore": [
+        "IEC 60559 floating extensions",
+        "compiler support documentation"
+      ]
+    }
+  ]
+}

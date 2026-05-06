@@ -1,0 +1,127 @@
+{
+  "name": "C/C++",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "implementation-defined",
+    "unsigned_out_of_range": "implementation-defined",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "implementation-defined"
+  },
+  "targets": [
+    {
+      "id": "general",
+      "name": "General (implementation-defined widths)",
+      "bits": {}
+    },
+    {
+      "id": "ilp32",
+      "name": "ILP32 (x86 / armv7 / riscv32)",
+      "bits": { "char": 8, "short": 16, "int": 32, "long": 32, "llong": 64, "ptr": 32, "wchar": 32 }
+    },
+    {
+      "id": "lp64",
+      "name": "LP64 (Linux/macOS/BSD 64-bit)",
+      "bits": { "char": 8, "short": 16, "int": 32, "long": 64, "llong": 64, "ptr": 64, "wchar": 32 }
+    },
+    {
+      "id": "llp64",
+      "name": "LLP64 (Windows 64-bit)",
+      "bits": { "char": 8, "short": 16, "int": 32, "long": 32, "llong": 64, "ptr": 64, "wchar": 16 }
+    },
+    {
+      "id": "lp32",
+      "name": "LP32 (historic 16-bit int / 32-bit long)",
+      "bits": { "char": 8, "short": 16, "int": 16, "long": 32, "llong": 64, "ptr": 32, "wchar": 16 }
+    },
+    {
+      "id": "ip16",
+      "name": "Embedded 16-bit (int16, ptr16, long32)",
+      "bits": { "char": 8, "short": 16, "int": 16, "long": 32, "llong": 64, "ptr": 16, "wchar": 16 }
+    },
+    {
+      "id": "avr",
+      "name": "AVR-GCC (int16, long32, ptr16)",
+      "bits": { "char": 8, "short": 16, "int": 16, "long": 32, "llong": 64, "ptr": 16, "wchar": 16 }
+    },
+    {
+      "id": "msp430",
+      "name": "MSP430 (int16, long32, ptr16)",
+      "bits": { "char": 8, "short": 16, "int": 16, "long": 32, "llong": 64, "ptr": 16, "wchar": 16 }
+    },
+    {
+      "id": "wasm32",
+      "name": "WASM32 (ILP32-like)",
+      "bits": { "char": 8, "short": 16, "int": 32, "long": 32, "llong": 64, "ptr": 32, "wchar": 32 }
+    },
+    {
+      "id": "wasm64",
+      "name": "WASM64 (LP64-like)",
+      "bits": { "char": 8, "short": 16, "int": 32, "long": 64, "llong": 64, "ptr": 64, "wchar": 32 }
+    }
+  ],
+  "types": [
+    { "name": "bool", "kind": "u", "bits": 1 },
+
+    { "name": "int8_t", "kind": "s", "bits": 8 },
+    { "name": "uint8_t", "kind": "u", "bits": 8 },
+    { "name": "int16_t", "kind": "s", "bits": 16 },
+    { "name": "uint16_t", "kind": "u", "bits": 16 },
+    { "name": "int32_t", "kind": "s", "bits": 32 },
+    { "name": "uint32_t", "kind": "u", "bits": 32 },
+    { "name": "int64_t", "kind": "s", "bits": 64 },
+    { "name": "uint64_t", "kind": "u", "bits": 64 },
+
+    { "name": "int_fast8_t", "kind": "s", "bits": 32 },
+    { "name": "uint_fast8_t", "kind": "u", "bits": 32 },
+    { "name": "int_fast16_t", "kind": "s", "bits": 32 },
+    { "name": "uint_fast16_t", "kind": "u", "bits": 32 },
+    { "name": "int_fast32_t", "kind": "s", "bits": 32 },
+    { "name": "uint_fast32_t", "kind": "u", "bits": 32 },
+    { "name": "int_fast64_t", "kind": "s", "bits": 64 },
+    { "name": "uint_fast64_t", "kind": "u", "bits": 64 },
+
+    { "name": "int_least8_t", "kind": "s", "bits": 8 },
+    { "name": "uint_least8_t", "kind": "u", "bits": 8 },
+    { "name": "int_least16_t", "kind": "s", "bits": 16 },
+    { "name": "uint_least16_t", "kind": "u", "bits": 16 },
+    { "name": "int_least32_t", "kind": "s", "bits": 32 },
+    { "name": "uint_least32_t", "kind": "u", "bits": 32 },
+    { "name": "int_least64_t", "kind": "s", "bits": 64 },
+    { "name": "uint_least64_t", "kind": "u", "bits": 64 },
+
+    { "name": "intmax_t", "kind": "s", "bits": 64 },
+    { "name": "uintmax_t", "kind": "u", "bits": 64 },
+
+    { "name": "signed char", "kind": "alias", "key": "char", "signed": true, "impl_if_missing": true },
+    { "name": "unsigned char", "kind": "alias", "key": "char", "signed": false, "impl_if_missing": true },
+    { "name": "char", "kind": "alias", "key": "char", "signed": true, "impl_if_missing": true },
+
+    { "name": "short", "kind": "alias", "key": "short", "signed": true, "impl_if_missing": true },
+    { "name": "unsigned short", "kind": "alias", "key": "short", "signed": false, "impl_if_missing": true },
+
+    { "name": "int", "kind": "alias", "key": "int", "signed": true, "impl_if_missing": true },
+    { "name": "unsigned int", "kind": "alias", "key": "int", "signed": false, "impl_if_missing": true },
+
+    { "name": "long", "kind": "alias", "key": "long", "signed": true, "impl_if_missing": true },
+    { "name": "unsigned long", "kind": "alias", "key": "long", "signed": false, "impl_if_missing": true },
+
+    { "name": "long long", "kind": "alias", "key": "llong", "signed": true, "impl_if_missing": true },
+    { "name": "unsigned long long", "kind": "alias", "key": "llong", "signed": false, "impl_if_missing": true },
+
+    { "name": "size_t", "kind": "alias", "key": "ptr", "signed": false, "impl_if_missing": true },
+    { "name": "ptrdiff_t", "kind": "alias", "key": "ptr", "signed": true, "impl_if_missing": true },
+    { "name": "intptr_t", "kind": "alias", "key": "ptr", "signed": true, "impl_if_missing": true },
+    { "name": "uintptr_t", "kind": "alias", "key": "ptr", "signed": false, "impl_if_missing": true },
+
+    { "name": "wchar_t", "kind": "alias", "key": "wchar", "signed": false, "impl_if_missing": true },
+
+    { "name": "float (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "double (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 },
+
+    { "name": "long double (x87 80-bit)", "kind": "float", "mantissa_bits": 64, "max_finite_exp2": 16383 },
+    { "name": "long double (IEEE-754 binary128)", "kind": "float", "mantissa_bits": 113, "max_finite_exp2": 16383 },
+    { "name": "long double (same as double)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}
+

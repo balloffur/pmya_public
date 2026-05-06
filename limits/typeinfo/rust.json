@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "rust",
+  "languageName": "Rust",
+  "languageNotes": [
+    "Rust fixed-width integers are explicit. usize/isize are pointer-sized and at least 16 bits.",
+    "Rust debug and release overflow behavior differs for built-in integer operators unless you use explicit wrapping/checked/saturating APIs."
+  ],
+  "types": [
+    {
+      "id": "i8",
+      "names": [
+        "i8"
+      ],
+      "kind": "signed integer primitive",
+      "definition": "8-bit signed integer primitive.",
+      "summary": "Exact-width Rust integer type `i8`.",
+      "standardGuarantee": "Exactly 8 bits; range -2^7..2^7-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "let x: i8 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "i8"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "i16",
+      "names": [
+        "i16"
+      ],
+      "kind": "signed integer primitive",
+      "definition": "16-bit signed integer primitive.",
+      "summary": "Exact-width Rust integer type `i16`.",
+      "standardGuarantee": "Exactly 16 bits; range -2^15..2^15-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "let x: i16 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "i16"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "i32",
+      "names": [
+        "i32"
+      ],
+      "kind": "signed integer primitive",
+      "definition": "32-bit signed integer primitive.",
+      "summary": "Exact-width Rust integer type `i32`.",
+      "standardGuarantee": "Exactly 32 bits; range -2^31..2^31-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "let x: i32 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "i32"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "i64",
+      "names": [
+        "i64"
+      ],
+      "kind": "signed integer primitive",
+      "definition": "64-bit signed integer primitive.",
+      "summary": "Exact-width Rust integer type `i64`.",
+      "standardGuarantee": "Exactly 64 bits; range -2^63..2^63-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "let x: i64 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "i64"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "i128",
+      "names": [
+        "i128"
+      ],
+      "kind": "signed integer primitive",
+      "definition": "128-bit signed integer primitive.",
+      "summary": "Exact-width Rust integer type `i128`.",
+      "standardGuarantee": "Exactly 128 bits; range -2^127..2^127-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "16 bytes / 128 bits"
+        }
+      ],
+      "examples": [
+        "let x: i128 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "i128"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "u8",
+      "names": [
+        "u8"
+      ],
+      "kind": "unsigned integer primitive",
+      "definition": "8-bit unsigned integer primitive.",
+      "summary": "Exact-width Rust integer type `u8`.",
+      "standardGuarantee": "Exactly 8 bits; range 0..2^8-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "let x: u8 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "u8"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "u16",
+      "names": [
+        "u16"
+      ],
+      "kind": "unsigned integer primitive",
+      "definition": "16-bit unsigned integer primitive.",
+      "summary": "Exact-width Rust integer type `u16`.",
+      "standardGuarantee": "Exactly 16 bits; range 0..2^16-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "let x: u16 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "u16"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "u32",
+      "names": [
+        "u32"
+      ],
+      "kind": "unsigned integer primitive",
+      "definition": "32-bit unsigned integer primitive.",
+      "summary": "Exact-width Rust integer type `u32`.",
+      "standardGuarantee": "Exactly 32 bits; range 0..2^32-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "let x: u32 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "u32"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "u64",
+      "names": [
+        "u64"
+      ],
+      "kind": "unsigned integer primitive",
+      "definition": "64-bit unsigned integer primitive.",
+      "summary": "Exact-width Rust integer type `u64`.",
+      "standardGuarantee": "Exactly 64 bits; range 0..2^64-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "let x: u64 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "u64"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "u128",
+      "names": [
+        "u128"
+      ],
+      "kind": "unsigned integer primitive",
+      "definition": "128-bit unsigned integer primitive.",
+      "summary": "Exact-width Rust integer type `u128`.",
+      "standardGuarantee": "Exactly 128 bits; range 0..2^128-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets that support the type",
+          "size": "16 bytes / 128 bits"
+        }
+      ],
+      "examples": [
+        "let x: u128 = 0;"
+      ],
+      "specialRules": [
+        "In debug builds, overflow in ordinary arithmetic checks and panics by default; in optimized release-style builds it wraps in two's-complement style unless explicit overflow checks are enabled.",
+        "Use wrapping_add, checked_add, saturating_add, overflowing_add when semantics must be explicit."
+      ],
+      "aliases": [
+        "u128"
+      ],
+      "readMore": [
+        "Rust numeric types"
+      ]
+    },
+    {
+      "id": "isize",
+      "names": [
+        "isize"
+      ],
+      "kind": "pointer-sized signed integer primitive",
+      "definition": "Signed integer with the same number of bits as the platform pointer type.",
+      "summary": "Useful for pointer differences, indexing-related signed math, and machine-word-sized arithmetic.",
+      "standardGuarantee": "At least 16 bits wide; same width as pointer-sized signed integer on the target.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit targets",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "let n: isize = 0;"
+      ],
+      "specialRules": [
+        "Do not assume 32 or 64 only in generic libraries, even though those dominate.",
+        "Not ideal for portable serialized formats."
+      ],
+      "aliases": [
+        "isize"
+      ],
+      "readMore": [
+        "Rust Reference machine-dependent integer types"
+      ]
+    },
+    {
+      "id": "usize",
+      "names": [
+        "usize"
+      ],
+      "kind": "pointer-sized unsigned integer primitive",
+      "definition": "Unsigned integer with the same number of bits as the platform pointer type.",
+      "summary": "Used pervasively for slice lengths, indexing, capacities, and many standard-library size APIs.",
+      "standardGuarantee": "At least 16 bits wide; same width as pointer type.",
+      "mainstreamSizes": [
+        {
+          "platform": "32-bit targets",
+          "size": "4 bytes / 32 bits"
+        },
+        {
+          "platform": "64-bit targets",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "let n: usize = vec.len();"
+      ],
+      "specialRules": [
+        "Best fit for lengths and indices, but not for portable on-disk/network numeric formats.",
+        "Unsigned subtraction can underflow; use checked/saturating patterns where appropriate."
+      ],
+      "aliases": [
+        "usize"
+      ],
+      "readMore": [
+        "Rust Reference machine-dependent integer types"
+      ]
+    },
+    {
+      "id": "f32",
+      "names": [
+        "f32"
+      ],
+      "kind": "floating-point primitive",
+      "definition": "IEEE 754-2008 binary32 floating-point primitive.",
+      "summary": "Rust floating type `f32`.",
+      "standardGuarantee": "Corresponds to IEEE 754-2008 binary32.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets with the type",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "~6-7 decimal digits",
+      "rounding": "Binary floating semantics; decimal fractions like 0.1 are usually inexact.",
+      "examples": [
+        "let x: f32 = 0.1;"
+      ],
+      "specialRules": [
+        "NaN is not equal to itself.",
+        "Use total_cmp when a total ordering is needed for f32/f64."
+      ],
+      "aliases": [
+        "f32"
+      ],
+      "readMore": [
+        "Rust numeric types",
+        "primitive docs"
+      ]
+    },
+    {
+      "id": "f64",
+      "names": [
+        "f64"
+      ],
+      "kind": "floating-point primitive",
+      "definition": "IEEE 754-2008 binary64 floating-point primitive.",
+      "summary": "Rust floating type `f64`.",
+      "standardGuarantee": "Corresponds to IEEE 754-2008 binary64.",
+      "mainstreamSizes": [
+        {
+          "platform": "all Rust targets with the type",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "~15-16 decimal digits",
+      "rounding": "Binary floating semantics; decimal fractions like 0.1 are usually inexact.",
+      "examples": [
+        "let x: f64 = 0.1;"
+      ],
+      "specialRules": [
+        "NaN is not equal to itself.",
+        "Use total_cmp when a total ordering is needed for f32/f64."
+      ],
+      "aliases": [
+        "f64"
+      ],
+      "readMore": [
+        "Rust numeric types",
+        "primitive docs"
+      ]
+    },
+    {
+      "id": "char",
+      "names": [
+        "char"
+      ],
+      "kind": "Unicode scalar value primitive",
+      "definition": "Rust char represents a Unicode scalar value, not a UTF-8 byte and not a UTF-16 code unit.",
+      "summary": "A single Rust char is 4 bytes and can hold one Unicode scalar value, excluding surrogate code points.",
+      "standardGuarantee": "Conceptually one Unicode scalar value; 4-byte storage on stable Rust.",
+      "mainstreamSizes": [
+        {
+          "platform": "all stable Rust targets",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "let c: char = '🦀';"
+      ],
+      "specialRules": [
+        "Different from C/C++ char and Java/Kotlin Char semantics.",
+        "A user-perceived grapheme cluster may require multiple chars."
+      ],
+      "aliases": [
+        "char"
+      ],
+      "readMore": [
+        "Rust primitive char"
+      ]
+    },
+    {
+      "id": "bool",
+      "names": [
+        "bool"
+      ],
+      "kind": "boolean primitive",
+      "definition": "Boolean primitive with values true and false.",
+      "summary": "Logical truth value type, not an integer substitute.",
+      "standardGuarantee": "Exactly two values: true and false.",
+      "examples": [
+        "let ok: bool = true;"
+      ],
+      "specialRules": [
+        "Do not assume memory layout compatibility with C bool without explicit FFI contract."
+      ],
+      "aliases": [
+        "bool"
+      ],
+      "readMore": [
+        "Rust primitive bool"
+      ]
+    }
+  ]
+}

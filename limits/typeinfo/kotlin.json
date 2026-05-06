@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 2,
+  "notes": [
+    "These files are designed for rendering detailed type information, not just range checking.",
+    "Fields are intentionally verbose so the UI can choose what to show.",
+    "mainstreamSizes describes common ABIs/platforms; standardGuarantee describes what the language standard itself promises."
+  ],
+  "languageId": "ktl",
+  "languageName": "Kotlin",
+  "languageNotes": [
+    "On the JVM, Kotlin primitive-like numeric types map to JVM primitives in many contexts but also have boxed forms.",
+    "Kotlin intentionally avoids implicit widening numeric conversions."
+  ],
+  "types": [
+    {
+      "id": "byte",
+      "names": [
+        "Byte"
+      ],
+      "kind": "integral type",
+      "definition": "8-bit integer type.",
+      "summary": "Kotlin numeric type `Byte`.",
+      "standardGuarantee": "Fixed width 8 bits; range -128..127.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "val x: Byte = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "Byte"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "short",
+      "names": [
+        "Short"
+      ],
+      "kind": "integral type",
+      "definition": "16-bit integer type.",
+      "summary": "Kotlin numeric type `Short`.",
+      "standardGuarantee": "Fixed width 16 bits; range -32768..32767.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "val x: Short = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "Short"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "int",
+      "names": [
+        "Int"
+      ],
+      "kind": "integral type",
+      "definition": "32-bit integer type.",
+      "summary": "Kotlin numeric type `Int`.",
+      "standardGuarantee": "Fixed width 32 bits; range -2^31..2^31-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "val x: Int = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "Int"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "long",
+      "names": [
+        "Long"
+      ],
+      "kind": "integral type",
+      "definition": "64-bit integer type.",
+      "summary": "Kotlin numeric type `Long`.",
+      "standardGuarantee": "Fixed width 64 bits; range -2^63..2^63-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "val x: Long = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "Long"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "ubyte",
+      "names": [
+        "UByte"
+      ],
+      "kind": "integral type",
+      "definition": "8-bit unsigned integer type.",
+      "summary": "Kotlin numeric type `UByte`.",
+      "standardGuarantee": "Fixed width 8 bits; range 0..255.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "1 bytes / 8 bits"
+        }
+      ],
+      "examples": [
+        "val x: UByte = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "UByte"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "ushort",
+      "names": [
+        "UShort"
+      ],
+      "kind": "integral type",
+      "definition": "16-bit unsigned integer type.",
+      "summary": "Kotlin numeric type `UShort`.",
+      "standardGuarantee": "Fixed width 16 bits; range 0..65535.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "2 bytes / 16 bits"
+        }
+      ],
+      "examples": [
+        "val x: UShort = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "UShort"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "uint",
+      "names": [
+        "UInt"
+      ],
+      "kind": "integral type",
+      "definition": "32-bit unsigned integer type.",
+      "summary": "Kotlin numeric type `UInt`.",
+      "standardGuarantee": "Fixed width 32 bits; range 0..2^32-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "examples": [
+        "val x: UInt = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "UInt"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "ulong",
+      "names": [
+        "ULong"
+      ],
+      "kind": "integral type",
+      "definition": "64-bit unsigned integer type.",
+      "summary": "Kotlin numeric type `ULong`.",
+      "standardGuarantee": "Fixed width 64 bits; range 0..2^64-1.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM logical type contract",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "examples": [
+        "val x: ULong = 1"
+      ],
+      "specialRules": [
+        "No implicit widening conversion to larger numeric types.",
+        "Use explicit conversion like toLong() / toUInt()."
+      ],
+      "aliases": [
+        "ULong"
+      ],
+      "readMore": [
+        "Kotlin numbers",
+        "Kotlin unsigned integer types"
+      ]
+    },
+    {
+      "id": "float",
+      "names": [
+        "Float"
+      ],
+      "kind": "binary floating-point",
+      "definition": "IEEE 754 single-precision floating-point type.",
+      "summary": "32-bit float with about 6-7 decimal digits.",
+      "standardGuarantee": "32-bit binary float semantics in Kotlin docs; on JVM interoperates with Java float.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM",
+          "size": "4 bytes / 32 bits"
+        }
+      ],
+      "precision": "24 bits precision, about 6-7 decimal digits.",
+      "rounding": "Binary floating rounding; literals with suffix f/F.",
+      "examples": [
+        "val x: Float = 1.0f"
+      ],
+      "specialRules": [
+        "No implicit conversion to Double.",
+        "0.1f is inexact."
+      ],
+      "aliases": [
+        "Float"
+      ],
+      "readMore": [
+        "Kotlin numbers"
+      ]
+    },
+    {
+      "id": "double",
+      "names": [
+        "Double"
+      ],
+      "kind": "binary floating-point",
+      "definition": "IEEE 754 double-precision floating-point type.",
+      "summary": "Default floating-point type for fractional literals in Kotlin.",
+      "standardGuarantee": "64-bit binary float semantics in Kotlin docs; on JVM interoperates with Java double.",
+      "mainstreamSizes": [
+        {
+          "platform": "Kotlin/JVM",
+          "size": "8 bytes / 64 bits"
+        }
+      ],
+      "precision": "53 bits precision, about 15-16 decimal digits.",
+      "rounding": "Binary floating rounding.",
+      "examples": [
+        "val x = 0.1"
+      ],
+      "specialRules": [
+        "0.1 is inexact.",
+        "No implicit numeric widening from Int/Float to Double in general function calls."
+      ],
+      "aliases": [
+        "Double"
+      ],
+      "readMore": [
+        "Kotlin numbers"
+      ]
+    },
+    {
+      "id": "char",
+      "names": [
+        "Char"
+      ],
+      "kind": "character type",
+      "definition": "Type representing a single UTF-16 code unit on Kotlin/JVM.",
+      "summary": "Character type aligned with the JVM char model for the JVM target.",
+      "standardGuarantee": "On JVM it maps to Java char semantics.",
+      "examples": [
+        "val c: Char = 'A'"
+      ],
+      "specialRules": [
+        "Not a full Unicode grapheme or necessarily full code point for supplementary characters."
+      ],
+      "aliases": [
+        "Char"
+      ],
+      "readMore": [
+        "Kotlin char / JVM mapping"
+      ]
+    },
+    {
+      "id": "biginteger",
+      "names": [
+        "BigInteger",
+        "java.math.BigInteger"
+      ],
+      "kind": "library arbitrary-precision integer",
+      "definition": "Kotlin commonly uses Java's BigInteger on the JVM for arbitrary-precision integers.",
+      "summary": "Not a built-in keyword type, but the practical arbitrary-precision integer option on JVM Kotlin.",
+      "standardGuarantee": "Library type rather than built-in language primitive.",
+      "examples": [
+        "BigInteger(\"12345678901234567890\")"
+      ],
+      "specialRules": [
+        "JVM-focused; multiplatform availability depends on libraries."
+      ],
+      "aliases": [
+        "BigInteger",
+        "java.math.BigInteger"
+      ],
+      "readMore": [
+        "JVM BigInteger interop"
+      ]
+    },
+    {
+      "id": "bigdecimal",
+      "names": [
+        "BigDecimal",
+        "java.math.BigDecimal"
+      ],
+      "kind": "library arbitrary-precision decimal",
+      "definition": "JVM decimal library type commonly used from Kotlin.",
+      "summary": "Best for exact decimal business logic on the JVM.",
+      "standardGuarantee": "Library type rather than built-in numeric primitive.",
+      "examples": [
+        "BigDecimal(\"0.1\")"
+      ],
+      "specialRules": [
+        "Prefer string constructors for exact decimal intent."
+      ],
+      "aliases": [
+        "BigDecimal",
+        "java.math.BigDecimal"
+      ],
+      "readMore": [
+        "JVM BigDecimal interop"
+      ]
+    }
+  ]
+}

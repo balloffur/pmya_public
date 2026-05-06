@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript runner</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./monaco.css">
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/editor/editor.main.css">
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/loader.js"></script>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+</head>
+<body>
+
+<a href="/" class="nav-home" aria-label="home">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+       stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </svg>
+</a>
+
+<div class="panel">
+  <div class="title">
+    <div>JavaScript runner</div>
+    <div class="bar">
+      <button class="btn btn-mini" id="js_help">?</button>
+      <button class="btn" id="js_run">Run</button>
+      <button class="btn" id="js_stop">Stop</button>
+      <button class="btn" id="js_clear">Clear</button>
+      <label class="chk"><input type="checkbox" id="js_autorun">Auto</label>
+    </div>
+  </div>
+
+  <div id="help_panel" hidden>
+    <div class="help_grid">
+      <div class="help_block">
+        <h4>Как запускать</h4>
+        <ul>
+          <li><span class="kbd">Ctrl+Enter</span> или Run</li>
+          <li>Stop пересоздаёт sandbox</li>
+          <li>Вывод через <span class="kbd">console.log</span></li>
+        </ul>
+      </div>
+      <div class="help_block">
+        <h4>Ограничения</h4>
+        <ul>
+          <li>Sandboxed iframe</li>
+          <li>Нет доступа к DOM страницы</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="split">
+    <div class="codewrap">
+      <div id="js_editor"></div>
+    </div>
+    <pre id="js_console" tabindex="0"></pre>
+  </div>
+
+  <iframe id="js_sandbox" sandbox="allow-scripts" style="display:none"></iframe>
+</div>
+
+<script>
+(() => {
+  const out = document.getElementById("js_console");
+  const runBtn = document.getElementById("js_run");
+  const stopBtn = document.getElementById("js_stop");
+  const clrBtn = document.getElementById("js_clear");
+  const autoEl = document.getElementById("js_autorun");
+  const helpBtn = document.getElementById("js_help");
+  const helpPanel = document.getElementById("help_panel");
+
+  let iframe = document.getElementById("js_sandbox");
+  let editor;
+  let tRun = 0;
+
+  function print(type, args){
+    const s = (args || []).map(x => {
+      if (x instanceof Error) return x.stack || x.message;
+      if (typeof x === "string") return x;
+      try { return JSON.stringify(x); } catch { return String(x); }
+    }).join(" ");
+    out.textContent += (type ? type + ": " : "") + s + "\n";
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function resetIframe(){
+    const n = iframe.cloneNode(false);
+    n.id = iframe.id;
+    n.sandbox = iframe.sandbox;
+    n.style.display = "none";
+    iframe.parentNode.replaceChild(n, iframe);
+    iframe = n;
+  }
+
+  function run(){
+    resetIframe();
+    out.textContent = "";
+    const code = editor.getValue().replace(/\r/g,"");
+
+    iframe.srcdoc = `<!doctype html><meta charset="utf-8">
+<script>
+(() => {
+  const send = (type, args) =>
+    parent.postMessage({__jsrunner:1,type,args}, "*");
+
+  const wrap = (fn, type) => (...a) => {
+    send(type, a);
+    try { fn(...a); } catch {}
+  };
+
+  console.log   = wrap(console.log, "");
+  console.info  = wrap(console.info, "info");
+  console.warn  = wrap(console.warn, "warn");
+  console.error = wrap(console.error, "error");
+
+  addEventListener("error", e => {
+    send("error", [e.message + " @ " + e.lineno + ":" + e.colno]);
+  });
+
+  addEventListener("unhandledrejection", e => {
+    send("error", [String(e.reason)]);
+  });
+
+  const t0 = performance.now();
+  try {
+${code}
+  } catch(e){
+    send("error",[e.stack || e.message]);
+  }
+  const dt = performance.now() - t0;
+  send("info", ["exec time: " + dt.toFixed(2) + " ms"]);
+})();
+<\/script>`;
+  }
+
+  function scheduleRun(){
+    clearTimeout(tRun);
+    tRun = setTimeout(run, 150);
+  }
+
+  window.addEventListener("message", e => {
+    if (e.source !== iframe.contentWindow) return;
+    const d = e.data;
+    if (!d || d.__jsrunner !== 1) return;
+    print(d.type, d.args);
+  });
+
+  runBtn.onclick = run;
+  stopBtn.onclick = resetIframe;
+  clrBtn.onclick = () => out.textContent = "";
+  helpBtn.onclick = () => helpPanel.hidden = !helpPanel.hidden;
+
+  const CDN = "https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs";
+
+  window.MonacoEnvironment = {
+    getWorkerUrl(){
+      const src = `
+        self.MonacoEnvironment={baseUrl:"${CDN}/"};
+        importScripts("${CDN}/base/worker/workerMain.js");
+      `;
+      return URL.createObjectURL(new Blob([src],{type:"text/javascript"}));
+    }
+  };
+
+  require.config({ paths:{ vs:CDN }});
+  require(["vs/editor/editor.main"], () => {
+    monaco.editor.defineTheme("runnerLight", {
+      base: "vs",
+      inherit: true,
+      rules: [
+        { token:"comment", foreground:getComputedStyle(document.documentElement).getPropertyValue("--tok-comment").replace("#","") }
+      ],
+      colors:{
+        "editor.background": getComputedStyle(document.documentElement).getPropertyValue("--monaco-editor-bg"),
+        "editor.foreground": getComputedStyle(document.documentElement).getPropertyValue("--monaco-editor-fg")
+      }
+    });
+    monaco.editor.setTheme("runnerLight");
+
+    editor = monaco.editor.create(document.getElementById("js_editor"), {
+      value:'console.log("hi");\n',
+      language:"javascript",
+      automaticLayout:true,
+      minimap:{enabled:false},
+      scrollBeyondLastLine:false
+    });
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, run);
+    editor.onDidChangeModelContent(() => {
+      if (autoEl.checked) scheduleRun();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

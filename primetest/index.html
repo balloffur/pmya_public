@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Primality Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root {
+      --bg: #e6e6e6;
+      --panel: #f2f2f2;
+      --border: #bdbdbd;
+      --text: #222;
+      --placeholder: #777;
+      --focus: #888;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      width: 520px;
+      max-width: 90%;
+    }
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 20px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--placeholder);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--focus);
+      background: var(--surface-hover);
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
+    .result {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    }
+
+    .result.neutral {
+    color: var(--subtle-text);
+    }
+
+    .result.prime {
+    color: var(--success-text);
+    background: var(--success-bg);
+    border-color: var(--success-border);
+    }
+
+    .result.composite {
+    color: var(--danger-text);
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+    }
+
+    .result.invalid {
+    color: var(--nav);
+    background: var(--surface-3);
+    }
+
+   /* home arrow */
+    .nav-home{
+      position:fixed;
+      top:12px;
+      left:10px;
+      color:var(--nav);
+      opacity:.3;
+    }
+    .nav-home:hover{opacity:1;color:var(--nav)}
+        
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+</head>
+
+<body>
+  <a href="/" class="nav-home" aria-label="home">
+    <svg viewBox="0 0 24 24" width="40" height="40"
+        fill="none" stroke="currentColor" stroke-width="3"
+        stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+  
+  <div class="panel">
+    <div class="title">
+        Primality test
+        <span id="digits" style="color:var(--muted); font-weight:400;"></span>
+    </div>
+
+    <input
+      id="name"
+      type="text"
+      placeholder="Enter integer (dec or hex)"
+      autocomplete="off"
+      spellcheck="false"
+    >
+    <div id="result" class="result neutral">
+    Deterministic up to 2⁶⁴, probabilistic for larger BigInt
+    </div>
+   
+  </div>
+
+  <script src="test.js"></script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
+</script>
+
+
+</body>
+</html>

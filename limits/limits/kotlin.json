@@ -1,0 +1,32 @@
+{
+  "name": "Kotlin",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "conversion",
+    "unsigned_out_of_range": "conversion",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "conversion"
+  },
+  "targets": [
+    { "id": "jvm", "name": "Kotlin/JVM (fixed primitive widths)", "bits": {} }
+  ],
+  "types": [
+    { "name": "Boolean", "kind": "u", "bits": 1 },
+
+    { "name": "Byte", "kind": "s", "bits": 8 },
+    { "name": "Short", "kind": "s", "bits": 16 },
+    { "name": "Int", "kind": "s", "bits": 32 },
+    { "name": "Long", "kind": "s", "bits": 64 },
+
+    { "name": "UByte", "kind": "u", "bits": 8 },
+    { "name": "UShort", "kind": "u", "bits": 16 },
+    { "name": "UInt", "kind": "u", "bits": 32 },
+    { "name": "ULong", "kind": "u", "bits": 64 },
+
+    { "name": "Char", "kind": "u", "bits": 16 },
+
+    { "name": "Float (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "Double (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}

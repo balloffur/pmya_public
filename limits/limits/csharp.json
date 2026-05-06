@@ -1,0 +1,32 @@
+{
+  "name": "C#",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "conversion",
+    "unsigned_out_of_range": "conversion",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "conversion"
+  },
+  "targets": [
+    { "id": "unchecked", "name": "C# unchecked (wrap/truncate on overflow)", "bits": {} },
+    { "id": "checked", "name": "C# checked (OverflowException on overflow)", "bits": {} }
+  ],
+  "types": [
+    { "name": "bool", "kind": "u", "bits": 1 },
+
+    { "name": "sbyte", "kind": "s", "bits": 8 },
+    { "name": "byte", "kind": "u", "bits": 8 },
+    { "name": "short", "kind": "s", "bits": 16 },
+    { "name": "ushort", "kind": "u", "bits": 16 },
+    { "name": "int", "kind": "s", "bits": 32 },
+    { "name": "uint", "kind": "u", "bits": 32 },
+    { "name": "long", "kind": "s", "bits": 64 },
+    { "name": "ulong", "kind": "u", "bits": 64 },
+
+    { "name": "char", "kind": "u", "bits": 16 },
+
+    { "name": "float (IEEE-754 binary32)", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 127 },
+    { "name": "double (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 }
+  ]
+}

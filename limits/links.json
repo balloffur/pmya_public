@@ -1,0 +1,35 @@
+{
+  "c": [
+    ["ISO C23 draft (N3096)", "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3096.pdf"],
+    ["ISO C++20 working draft (N4860)", "https://isocpp.org/files/papers/N4860.pdf"],
+    ["ISO C++23 working draft (N4950)", "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/n4950.pdf"],
+    ["C++ implicit conversions (cppreference)", "https://en.cppreference.com/w/cpp/language/implicit_conversion"],
+    ["C integer types (cppreference)", "https://en.cppreference.com/w/c/types/integer"],
+    ["C conversions & promotions (cppreference)", "https://en.cppreference.com/w/c/language/conversion"]
+  ],
+  "java": [
+    ["JLS §4 — Types, Values, and Variables", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html"],
+    ["JLS §5 — Conversions and Contexts", "https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html"]
+  ],
+  "js": [
+    ["ECMA-262 — Number type", "https://tc39.es/ecma262/#sec-number-type"],
+    ["ECMA-262 — ToInt32", "https://tc39.es/ecma262/#sec-toint32"],
+    ["ECMA-262 — ToUint32", "https://tc39.es/ecma262/#sec-touint32"],
+    ["ECMA-262 — BigInt type", "https://tc39.es/ecma262/#sec-bigint-type"]
+  ],
+  "go": [
+    ["Go spec — Numeric types", "https://go.dev/ref/spec#Numeric_types"],
+    ["Go spec — Conversions", "https://go.dev/ref/spec#Conversions"]
+  ],
+  "cs": [
+    ["C# language spec — Conversions", "https://learn.microsoft.com/dotnet/csharp/language-reference/language-specification/conversions"],
+    ["checked / unchecked", "https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/checked-and-unchecked"]
+  ],
+  "ktl": [
+    ["Kotlin — Numbers", "https://kotlinlang.org/docs/numbers.html"]
+  ],
+  "rust": [
+    ["Rust Reference — Type cast expressions", "https://doc.rust-lang.org/reference/expressions/operator-expr.html#type-cast-expressions"],
+    ["Rust primitive types", "https://doc.rust-lang.org/std/primitive/index.html"]
+  ]
+}

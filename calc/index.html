@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js"></script>
+</head>
+
+<body>
+  <a href="/" class="nav-home" aria-label="home">
+    <svg viewBox="0 0 24 24" width="40" height="40"
+         fill="none" stroke="currentColor" stroke-width="3"
+         stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+
+  <div class="layout">
+    <div class="panel panel-help" id="helpPanel" style="display:none">
+      <div class="help-head">
+        <div class="help-title">Help</div>
+        <button class="btn" id="btnHelpClose">close</button>
+      </div>
+
+      <div class="help-body">
+        <div class="help-section">
+          <div class="help-h">Operators</div>
+          <div class="help-line"><span class="mono">+ - * / % ^ !</span></div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-h">Constants</div>
+          <div class="help-line"><span class="mono">pi, e, phi</span></div>
+          <div class="help-line"><span class="mono">ans</span> previous answer</div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-h">BigInt functions</div>
+          <div class="help-line"><span class="mono">gcd(a,b), lcm(a,b)</span></div>
+          <div class="help-line"><span class="mono">powmod(a,e,m)</span></div>
+          <div class="help-line"><span class="mono">C(n,k), fib(n)</span></div>
+          <div class="help-line"><span class="mono">sqrt(n), abs(n)</span></div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-h">Double functions</div>
+          <div class="help-line"><span class="mono">sin(x), cos(x), tan(x), tg(x), ctg(x)</span></div>
+          <div class="help-line"><span class="mono">arcsin(x), arccos(x), arctan(x), arctg(x), arcctg(x), arccot(x)</span></div>
+          <div class="help-line"><span class="mono">ln(x), lg(x), log(base, x)</span></div>
+          <div class="help-line"><span class="mono">sqrt(x), abs(x)</span></div>
+          <div class="help-line"><span class="mono">ceil(x), floor(x), round(x)</span></div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-h">Directives</div>
+          <div class="help-line"><span class="mono">#deg #rad</span> — trigonometry mode</div>
+          <div class="help-line"><span class="mono">#clear</span>, <span class="mono">#cls</span> — clear variables and reset <span class="mono">ans</span></div>
+          <div class="help-line"><span class="mono">#timeout=&lt;ms&gt;</span> — execution time limit</div>
+          <div class="help-line"><span class="mono">#repeat n</span> — repeat following block <span class="mono">n</span> times</div>
+          <div class="help-line"><span class="mono">#repeat n m</span> — repeat next <span class="mono">n</span> lines <span class="mono">m</span> times</div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-h">Input</div>
+          <div class="help-line"><span class="mono">AUTO</span> — run on input</div>
+          <div class="help-line"><span class="mono">ENTR</span> — run (when AUTO off)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-calc">
+      <div class="top">
+        <div class="title">
+          Calculator <span class="mode" id="modeBadge"></span>
+        </div>
+        <div class="tools">
+          <button class="btn" id="btnHelp" aria-label="help" title="Help">?</button>
+          <button class="btn on" id="btnAuto" title="Auto run on input">AUTO</button>
+          <button class="btn" id="btnDeg">rad</button>
+        </div>
+      </div>
+
+      <textarea id="expr" class="expr" rows="1" spellcheck="false" autocomplete="off"
+        placeholder="AUTO: on input | ENTR: run"></textarea>
+
+      <div class="result-row">
+        <div id="out" class="result ok">—</div>
+        <button class="clip" id="btnCopy" aria-label="copy result" title="Copy">
+          <svg viewBox="0 0 24 24" width="22" height="22"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="panel panel-vars" id="varsPanel" style="display:none">
+      <div class="vars-head">
+        <div class="vars-title">Variables</div>
+        <button class="btn" id="btnVarsClear">clear</button>
+      </div>
+      <pre id="vars_list" class="vars"></pre>
+    </div>
+  </div>
+
+  <script src="./evl.js"></script>
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+
+      const exprEl = $("expr");
+      const outEl = $("out");
+      const modeBadge = $("modeBadge");
+
+      const varsPanel = $("varsPanel");
+      const varsList = $("vars_list");
+      const btnVarsClear = $("btnVarsClear");
+
+      const btnDeg = $("btnDeg");
+      const btnAuto = $("btnAuto");
+      const btnCopy = $("btnCopy");
+
+      const helpPanel = $("helpPanel");
+      const btnHelp = $("btnHelp");
+      const btnHelpClose = $("btnHelpClose");
+
+      let autoRun = true;
+
+      function autosize(){
+        exprEl.style.height = "0px";
+        exprEl.style.height = exprEl.scrollHeight + "px";
+      }
+
+      function refreshMode(){
+        if (!window.evl || typeof evl.detect_mode !== "function") { modeBadge.textContent = ""; return; }
+        const m = evl.detect_mode(exprEl.value || "");
+        modeBadge.textContent = m ? ("— " + m) : "";
+      }
+
+      function refreshVarsVisibility(){
+        if (!window.evl) { varsPanel.style.display = "none"; return; }
+        const fk = Object.keys(evl.float_variables || {}).length;
+        const bk = Object.keys(evl.bigint_variables || {}).length;
+        varsPanel.style.display = (fk + bk) ? "block" : "none";
+      }
+
+      function refreshOutClass(){
+        const t = (outEl.textContent || "");
+        const isErr = /unknown|undefined|mismatch|insufficient|division|stack|error/i.test(t);
+        outEl.classList.toggle("err", isErr);
+        outEl.classList.toggle("ok", !isErr);
+      }
+
+      function setAuto(on){
+        autoRun = !!on;
+        btnAuto.classList.toggle("on", autoRun);
+        btnAuto.textContent = autoRun ? "AUTO" : "ENTR";
+        if (window.evl && typeof evl.set_auto_mode === "function") evl.set_auto_mode(autoRun);
+      }
+
+      btnDeg.addEventListener("click", () => {
+        if (!window.evl) return;
+        evl.trig_mode_degrees = !evl.trig_mode_degrees;
+        btnDeg.textContent = evl.trig_mode_degrees ? "DEG" : "RAD";
+        btnDeg.classList.toggle("on", evl.trig_mode_degrees);
+        if (autoRun && window.evl_run) window.evl_run();
+      });
+
+      btnAuto.addEventListener("click", () => setAuto(!autoRun));
+
+      btnCopy.addEventListener("click", async () => {
+        const text = (outEl.textContent || "").trim();
+        if (!text || text === "—") return;
+        try { await navigator.clipboard.writeText(text); } catch {}
+      });
+
+      btnVarsClear.addEventListener("click", () => {
+        if (!window.evl || typeof evl.clear_variables !== "function") return;
+        evl.clear_variables();
+        varsList.textContent = "";
+        refreshVarsVisibility();
+      });
+
+      function toggleHelp(on){
+        const show = (on != null) ? !!on : (helpPanel.style.display === "none");
+        helpPanel.style.display = show ? "block" : "none";
+      }
+
+      btnHelp.addEventListener("click", () => toggleHelp());
+      btnHelpClose.addEventListener("click", () => toggleHelp(false));
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") toggleHelp(false);
+      });
+
+      const mo = new MutationObserver(() => {
+        refreshOutClass();
+        refreshVarsVisibility();
+      });
+      mo.observe(outEl, { childList: true, characterData: true, subtree: true });
+      mo.observe(varsList, { childList: true, characterData: true, subtree: true });
+
+      exprEl.addEventListener("input", () => {
+        autosize();
+        refreshMode();
+        if (autoRun && window.evl_run) window.evl_run();
+      });
+
+      autosize();
+      refreshMode();
+      refreshOutClass();
+      refreshVarsVisibility();
+      setAuto(true);
+    })();
+  </script>
+
+  <script src="mobile.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
+</body>
+</html>

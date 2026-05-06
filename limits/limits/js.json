@@ -1,0 +1,36 @@
+{
+  "name": "JavaScript",
+  "parse": { "mode": "auto" },
+  "rules": {
+    "unsigned_wrap": true,
+    "signed_out_of_range": "conversion",
+    "unsigned_out_of_range": "conversion",
+    "float_to_int_truncation": "conversion",
+    "float_to_int_out_of_range": "conversion"
+  },
+  "targets": [
+    {
+      "id": "ecmascript",
+      "name": "ECMAScript (Number, BigInt, spec conversions)",
+      "bits": {}
+    }
+  ],
+  "types": [
+    { "name": "Number (IEEE-754 binary64)", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1023 },
+    { "name": "BigInt", "kind": "unbounded" },
+
+    { "name": "ToInt32", "kind": "conv", "op": "toIntN", "bits": 32, "signed": true },
+    { "name": "ToUint32", "kind": "conv", "op": "toIntN", "bits": 32, "signed": false },
+
+    { "name": "ToInt16", "kind": "conv", "op": "toIntN", "bits": 16, "signed": true },
+    { "name": "ToUint16", "kind": "conv", "op": "toIntN", "bits": 16, "signed": false },
+
+    { "name": "ToInt8", "kind": "conv", "op": "toIntN", "bits": 8, "signed": true },
+    { "name": "ToUint8", "kind": "conv", "op": "toIntN", "bits": 8, "signed": false },
+
+    { "name": "ToUint8Clamp", "kind": "conv", "op": "toUint8Clamp" },
+
+    { "name": "BigInt64", "kind": "conv", "op": "bigIntN", "bits": 64, "signed": true },
+    { "name": "BigUint64", "kind": "conv", "op": "bigIntN", "bits": 64, "signed": false }
+  ]
+}

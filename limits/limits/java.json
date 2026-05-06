@@ -1,0 +1,12 @@
+{
+  "name": "Java",
+  "targets": [ { "id": "std", "name": "JVM (fixed by spec)" } ],
+  "types": [
+    { "name": "byte", "kind": "s", "bits": 8 },
+    { "name": "short", "kind": "s", "bits": 16 },
+    { "name": "int", "kind": "s", "bits": 32 },
+    { "name": "long", "kind": "s", "bits": 64 },
+    { "name": "float", "kind": "float", "mantissa_bits": 24, "max_finite_exp2": 128 },
+    { "name": "double", "kind": "float", "mantissa_bits": 53, "max_finite_exp2": 1024 }
+  ]
+}
