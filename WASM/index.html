@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clang WASM Test</title>
+    <meta charset="utf-8">
+    <title>Clang Test</title>
 </head>
 <body>
-    <h1>Clang WASM Test</h1>
-    <pre id="output">Loading...</pre>
+<pre id="out">Loading...</pre>
 
-    <script type="module">
-        import { commands } from "./bundle.js";
+<script type="module">
+import { commands } from "./gen/bundle.js";
 
-        const output = document.getElementById("output");
+const out = document.getElementById("out");
 
-        try {
-            let text = "";
+let text = "";
 
-            await commands.clang(
-                ["--version"],
-                {},
-                {
-                    stdout(bytes) {
-                        if (bytes)
-                            text += new TextDecoder().decode(bytes);
-                    },
-                    stderr(bytes) {
-                        if (bytes)
-                            text += new TextDecoder().decode(bytes);
-                    }
-                }
-            );
+const append = bytes => {
+    if (bytes)
+        text += new TextDecoder().decode(bytes);
+};
 
-            output.textContent = text;
-        } catch (e) {
-            output.textContent = String(e);
-            console.error(e);
+try {
+    await commands.clang(
+        ["--version"],
+        {},
+        {
+            stdout: append,
+            stderr: append
         }
-    </script>
+    );
+
+    out.textContent = text || "No output";
+}
+catch (e) {
+    out.textContent =
+        "ERROR:\n\n" +
+        String(e) +
+        "\n\n" +
+        (e?.stack || "");
+    console.error(e);
+}
+</script>
+
 </body>
 </html>
