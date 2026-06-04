@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clang WASM Test</title>
+</head>
+<body>
+    <h1>Clang WASM Test</h1>
+    <pre id="output">Loading...</pre>
+
+    <script type="module">
+        import { commands } from "./bundle.js";
+
+        const output = document.getElementById("output");
+
+        try {
+            let text = "";
+
+            await commands.clang(
+                ["--version"],
+                {},
+                {
+                    stdout(bytes) {
+                        if (bytes)
+                            text += new TextDecoder().decode(bytes);
+                    },
+                    stderr(bytes) {
+                        if (bytes)
+                            text += new TextDecoder().decode(bytes);
+                    }
+                }
+            );
+
+            output.textContent = text;
+        } catch (e) {
+            output.textContent = String(e);
+            console.error(e);
+        }
+    </script>
+</body>
+</html>
